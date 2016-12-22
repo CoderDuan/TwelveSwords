@@ -10,7 +10,9 @@ public enum DamageType
 public class Creature
 {
     public int hp;
+    public int maxHp;
     public int mp;
+    public int maxMp;
     public int atk;
     public int def;
     public int mag;

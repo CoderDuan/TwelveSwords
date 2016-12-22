@@ -12,6 +12,7 @@ public class Orc : Monster
     {
         name = "Orc";
         hp = 250;
+        maxHp = 250;
         atk = 5;
         def = 5;
         mag = 5;
