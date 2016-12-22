@@ -31,23 +31,26 @@ public class Creature
     public List<Skill> skillList = new List<Skill>();
     //public List<PassiveSkill> passiveSkillList = new List<PassiveSkill>();
     //public PassiveSkill activePassiveSkill;
-    public virtual void takeDamage(int damage, int type)
+    public virtual int takeDamage(int damage, DamageType type)
     {
+        int dmg = damage;
         switch(type)
         {
-            case (int)DamageType.PHYSICAL:
-                int dmg = damage - def;
+            case DamageType.PHYSICAL:
+                dmg = dmg - def;
                 if (dmg < 0)
                     dmg = 0;
                 hp -= dmg;
                 break;
-            case (int)DamageType.MAGICAL:
-                hp -= damage;
+            case DamageType.MAGICAL:
+                hp -= dmg;
                 break;
             default:
-                hp -= damage;
+                hp -= dmg;
                 break;
         }
+        if (hp < 0) hp = 0;
+        return dmg;
     }
 
     public void applyBuff()

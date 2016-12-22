@@ -1,4 +1,6 @@
-﻿public enum SkillType : int
+﻿using System.Collections;
+
+public enum SkillType : int
 {
     PHYSICAL = 0,
     MAGICAL = 1
@@ -10,10 +12,14 @@ abstract public class Skill
     public int cost;
     public int proficient;
     public int constant;
+    public string name;
+    public string description;
 
-    public virtual void init();
+    public bool isLocked;
 
-    public virtual float[] getProbability(int dice1);
+    public abstract void init();
 
-    public virtual void apply(Creature from, Creature to, int dice1, int dice2);
+    public abstract float[] getProbability(int dice1);
+
+    public abstract ArrayList apply(Creature from, Creature to, int dice1, int dice2);
 }

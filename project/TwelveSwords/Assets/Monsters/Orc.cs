@@ -16,6 +16,7 @@ public class Orc : Monster
         atk = 5;
         def = 5;
         mag = 5;
+        turn = 0;
     }
 
     void calculateTurn()
@@ -23,13 +24,25 @@ public class Orc : Monster
         turn++;
     }
 
-    public override void takeTurn(Hero hero, int d1, int d2)
+    public override ArrayList takeTurn(Hero hero, int d1, int d2)
     {
         calculateTurn();
         if(turn % 2 == 0)
         {
             int damage = ((d1 + d2) * atk);
-            hero.takeDamage(damage, (int)DamageType.PHYSICAL);
+            damage = hero.takeDamage(damage, (int)DamageType.PHYSICAL);
+
+            ArrayList array = new ArrayList();
+
+            // put all buff in this array
+
+            Buff dmgbuff = new Buff();
+            dmgbuff.extraValue = damage;
+            dmgbuff.type = BuffType.DIRECT;
+            array.Add(dmgbuff);
+
+            return array;
         }
+        return null;
     }
 }
