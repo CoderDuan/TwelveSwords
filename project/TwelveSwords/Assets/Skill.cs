@@ -1,26 +1,19 @@
 ﻿public enum SkillType : int
 {
     PHYSICAL = 0,
-    MAGICAL = 1
+    MAGIC = 1
 }
 
-public class Skill
+abstract public class Skill
 {
     public SkillType type;
-    public uint cost;
-    public uint proficient;
-    public uint coefficient;
-    public uint constant;
+    public int cost;
+    public int proficient;
+    public int constant;
 
-    public virtual float[] getProbability(uint dice1)
-    {
-        float [] ret = new float[] {0.0f,0.0f,0.0f,0.0f};
+    public virtual void init();
 
-        return ret;
-    }
+    public virtual float[] getProbability(int dice1);
 
-    public virtual void apply(Creature from, Creature to, uint dice1, uint dice2)
-    {
-
-    }
+    public virtual void apply(Creature from, Creature to, int dice1, int dice2);
 }
