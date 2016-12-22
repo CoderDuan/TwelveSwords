@@ -20,8 +20,8 @@ public class Controller : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        hero = new Hero("Duan", 250, 60, 5, 5, 5);
-        monster = new Monster("Orc", 250, 0, 5, 5, 5);
+        hero = new Hero();
+        monster = new Orc() ;
 	}
 	
 	// Update is called once per frame

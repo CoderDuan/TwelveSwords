@@ -1,7 +1,7 @@
 ﻿public enum SkillType : int
 {
     PHYSICAL = 0,
-    MAGIC = 1
+    MAGICAL = 1
 }
 
 abstract public class Skill

@@ -14,7 +14,7 @@ public class FireBall : Skill
 
     public override void init()
     {
-        type = SkillType.MAGIC;
+        type = SkillType.MAGICAL;
         cost = 20;
         proficient = 1;
         constant = 20;
@@ -56,6 +56,6 @@ public class FireBall : Skill
 
         int damage = Dice.max(dice1, dice2);
 
-        to.takeDamage(damage, DamageType.MAGIC);
+        to.takeDamage(damage, DamageType.MAGICAL);
     }
  }
