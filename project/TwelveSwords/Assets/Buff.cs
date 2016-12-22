@@ -1,4 +1,4 @@
-﻿public enum BuffType : uint
+﻿public enum BuffType : int
 {
     BURNING = 0, 
     BLEEDING,   
