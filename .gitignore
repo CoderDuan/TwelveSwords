@@ -3,3 +3,4 @@
 /project/TwelveSwords/Library/*
 /project/TwelveSwords/obj/*
 /project/TwelveSwords/Assembly-CSharp.csproj
+*.meta

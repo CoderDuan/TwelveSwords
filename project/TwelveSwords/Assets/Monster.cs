@@ -6,13 +6,17 @@ public class Monster : Creature
     public uint turn;
     public string description;
 
-    public Monster(string name, int hp, int mp, int atk, int def, int mag)
-        : base(name, hp, mp, atk, def, mag)
+    public Monster()
     {
         
     }
 
-    public void takeTurn()
+    public override void init()
+    {
+
+    }
+
+    public virtual void takeTurn(Hero hero, int d1, int d2)
     {
 
     }
