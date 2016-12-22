@@ -1,14 +1,18 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2008
 
-
+Project("{A5A67BAA-CAEF-BDEA-CAD0-B9551F2AA4A2}") = "TwelveSwords", "Assembly-CSharp.csproj", "{67584A22-3E1C-1BE4-87DE-5EC670363786}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-
+		{67584A22-3E1C-1BE4-87DE-5EC670363786}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67584A22-3E1C-1BE4-87DE-5EC670363786}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67584A22-3E1C-1BE4-87DE-5EC670363786}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67584A22-3E1C-1BE4-87DE-5EC670363786}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
