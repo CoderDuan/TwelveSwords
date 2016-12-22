@@ -9,9 +9,13 @@ public class Hero : Creature
     public Item[] item = new Item[3];
     public List<Title> titleList = new List<Title>();
 
-    public Hero(string name, int hp, int mp, int atk, int def, int mag)
-        : base(name, hp, mp, atk, def, mag)
+    public Hero()
     {
 
+    }
+
+    public override void takeDamage(int damage, int type)
+    {
+        
     }
 }

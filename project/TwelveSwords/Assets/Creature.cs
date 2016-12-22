@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
-enum DamageType
+public enum DamageType
 {
     PHYSICAL = 0,
-    MAGIC,
+    MAGICAL,
 }
 
 public class Creature
@@ -16,20 +16,37 @@ public class Creature
     public int mag;
     public string name;
 
-    public Creature(string name, int hp, int mp, int atk, int def, int mag)
+    public Creature()
     {
-        this.name = name;
-        this.hp = hp;
-        this.mp = mp;
-        this.atk = atk;
-        this.def = def;
-        this.mag = mag;
+
+    }
+
+    public virtual void init()
+    {
+
     }
 
     public List<Skill> skillList = new List<Skill>();
     //public List<PassiveSkill> passiveSkillList = new List<PassiveSkill>();
     //public PassiveSkill activePassiveSkill;
-    public virtual void takeDamage(int damage, int type) { }
+    public virtual void takeDamage(int damage, int type)
+    {
+        switch(type)
+        {
+            case (int)DamageType.PHYSICAL:
+                int dmg = damage - def;
+                if (dmg < 0)
+                    dmg = 0;
+                hp -= dmg;
+                break;
+            case (int)DamageType.MAGICAL:
+                hp -= damage;
+                break;
+            default:
+                hp -= damage;
+                break;
+        }
+    }
 
     public void applyBuff()
     {
