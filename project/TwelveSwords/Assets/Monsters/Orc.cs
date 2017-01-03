@@ -14,7 +14,6 @@ public class Orc : Monster
         hp = 250;
         maxHp = 250;
         atk = 5;
-        def = 5;
         mag = 5;
         turn = 0;
     }
@@ -24,7 +23,7 @@ public class Orc : Monster
         turn++;
     }
 
-    public override ArrayList takeTurn(Hero hero, int d1, int d2)
+    public override int takeTurn(Hero hero, int d1, int d2)
     {
         calculateTurn();
         if(turn % 2 == 0)
@@ -34,15 +33,8 @@ public class Orc : Monster
 
             ArrayList array = new ArrayList();
 
-            // put all buff in this array
-
-            Buff dmgbuff = new Buff();
-            dmgbuff.extraValue = damage;
-            dmgbuff.type = BuffType.DIRECT;
-            array.Add(dmgbuff);
-
-            return array;
+            return damage;
         }
-        return null;
+        return 0;
     }
 }

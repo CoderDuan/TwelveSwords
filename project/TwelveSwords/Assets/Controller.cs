@@ -27,7 +27,7 @@ public class Controller : MonoBehaviour {
         turn = 0;
         dice1 = 1;
         dice2 = 1;
-        hero = new Hero();
+        hero = ((HeroContainer)GameObject.Find("Hero").transform.GetComponent<HeroContainer>()).hero;
         monster = new Orc();
 	}
 	
@@ -71,24 +71,24 @@ public class Controller : MonoBehaviour {
                 Debug.Log(monster.name + " 第一个骰子值 " + dice1.ToString());
                 Debug.Log(monster.name + " 第二个骰子值 " + dice2.ToString());
 
-                ArrayList buffArray = monster.takeTurn(hero, dice1, dice2);
+                int ret = monster.takeTurn(hero, dice1, dice2);
 
-                if (buffArray == null)
+                if (ret == -1)
                     Debug.Log(monster.name + " 并没有行动");
                 else
                 {
                     Debug.Log(monster.name + " 普通攻击了一下");
 
-                    int size = buffArray.Count;
-                    int damageIdx = size - 1;
+                    //int size = buffArray.Count;
+                    //int damageIdx = size - 1;
 
-                    for (int i = 0; i < damageIdx - 1;i++ )
-                    {
-                        Debug.Log(((Buff)buffArray[i]).name + "+" + ((Buff)buffArray[i]).turn.ToString());
+                    //for (int i = 0; i < damageIdx - 1;i++ )
+                    //{
+                    //    Debug.Log(((Buff)buffArray[i]).name + "+" + ((Buff)buffArray[i]).turn.ToString());
 
-                    }
+                    //}
 
-                    Debug.Log(hero.name + " 受到了 " + ((Buff)buffArray[damageIdx]).extraValue.ToString() + " 伤害");
+                    //Debug.Log(hero.name + " 受到了 " + ((Buff)buffArray[damageIdx]).extraValue.ToString() + " 伤害");
 
                     Debug.Log(hero.name + "血量：" + hero.hp.ToString() + "/" + hero.maxHp.ToString());
                     Debug.Log(monster.name + "血量：" + monster.hp.ToString() + "/" + monster.maxHp.ToString());
@@ -115,18 +115,18 @@ public class Controller : MonoBehaviour {
 
             Debug.Log(hero.name + " 第二个骰子值 " + dice2.ToString());
 
-            ArrayList buffArray = skill.apply(hero, monster, dice1, dice2);
+            skill.apply(hero, monster, dice1, dice2);
 
-            int size = buffArray.Count;
-            int damageIdx = size - 1;
+            //int size = buffArray.Count;
+            //int damageIdx = size - 1;
 
-            for (int i = 0; i < damageIdx - 1;i++ )
-            {
-                Debug.Log(((Buff)buffArray[i]).name + "+" + ((Buff)buffArray[i]).turn.ToString());
+            //for (int i = 0; i < damageIdx - 1;i++ )
+            //{
+            //    Debug.Log(((Buff)buffArray[i]).name + "+" + ((Buff)buffArray[i]).turn.ToString());
 
-            }
+            //}
 
-            Debug.Log(monster.name + " 受到了 " + ((Buff)buffArray[damageIdx]).extraValue.ToString() + " 伤害");
+            //Debug.Log(monster.name + " 受到了 " + ((Buff)buffArray[damageIdx]).extraValue.ToString() + " 伤害");
 
 
             Debug.Log(hero.name + "血量：" + hero.hp.ToString() + "/" + hero.maxHp.ToString());

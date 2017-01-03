@@ -16,8 +16,8 @@ public class Monster : Creature
 
     }
 
-    public virtual ArrayList takeTurn(Hero hero, int d1, int d2)
+    public virtual int takeTurn(Hero hero, int d1, int d2)
     {
-        return null;
+        return -1;
     }
 }

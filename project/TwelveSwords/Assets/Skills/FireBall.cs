@@ -8,9 +8,9 @@
 
 using System.Collections;
 
-public class FireBall : Skill
+public class Fireball : Skill
 {
-    public FireBall()
+    public Fireball()
     {
         init();
     }
@@ -18,12 +18,14 @@ public class FireBall : Skill
     public override void init()
     {
         type = SkillType.MAGICAL;
+        level = SkillLevel.PRIMARY;
         cost = 20;
         proficient = 1;
+        maxProficient = 4;
         constant = 20;
         isLocked = false;
         name = "火球术";
-        description = "用魔法创造出一团火球，烧死秀恩爱的";
+        description = "用魔法创造出一团火球，小心烫";
     }
 
     public override float[] getProbability(int dice1)
@@ -56,14 +58,12 @@ public class FireBall : Skill
         return ret;
     }
 
-    public override ArrayList apply(Creature from, Creature to, int dice1, int dice2)
+    public override int apply(Creature from, Creature to, int dice1, int dice2)
     {
-        // 还没有加耗蓝哦
         ArrayList array = new ArrayList();
-        
-        int mag = from.mag;
 
         int damage = Dice.max(dice1, dice2) * from.mag;
+        int manacost = cost;
 
         float addition = 1.0f;
         float decrease = 1.0f;
@@ -77,16 +77,12 @@ public class FireBall : Skill
         // proficient 2,3,4
 
         damage = (int)((float)damage * addition);
+        manacost = (int)((float)manacost * decrease);
 
         damage = to.takeDamage(damage, DamageType.MAGICAL);
 
-        // put all buff in this array
-
-        Buff dmgbuff = new Buff();
-        dmgbuff.extraValue = damage;
-        dmgbuff.type = BuffType.DIRECT;
-        array.Add(dmgbuff);
-
-        return array;
+        from.mp -= cost;
+        
+        return damage;
     }
  }

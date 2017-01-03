@@ -7,13 +7,18 @@ public class SKillScroll : MonoBehaviour {
 
     public Skill selectedSkill;
 
-    public GameObject GUI;
+    public GameObject panel;
 
-    FireBall fireball = new FireBall();
+    public GameObject cellPrefab;
+
+    public HeroContainer heroContainer;
+
+    private ArrayList skillList;
 
 	// Use this for initialization
 	void Start () {
 		selectedSkill = null;
+        skillList = new ArrayList();
         init();
 	}
 	
@@ -24,12 +29,26 @@ public class SKillScroll : MonoBehaviour {
 
     private void init()
     {
-        GUI.transform.FindChild("FireballBtn").GetComponent<Button>().interactable = !fireball.isLocked;
+        // Put all skills into skillList in order
+        skillList.Add(new Fireball());
+
+        // Loop and create cell
+        int size = skillList.Count;
+        for (int i=0;i<size;i++)
+        {
+            GameObject cell = Instantiate(cellPrefab);
+            cell.name = "cell" + i.ToString(); 
+            ((Text)(cell.transform.Find("Name")).gameObject.GetComponent<Text>()).text = ((Skill)skillList[i]).name;
+            int idx = i;
+            ((Button)(cell.transform.Find("Icon").gameObject.GetComponent<Button>())).onClick.AddListener(() => setSelectedSkill(idx));
+            cell.transform.parent = panel.transform;
+            cell.SetActive(!((Skill)skillList[i]).isLocked);
+        }
     }
 
-    public void setFireball()
+    public void setSelectedSkill(int idx)
     {
-        selectedSkill = fireball;
-        Debug.Log("貌似正在思考火球术...");
+        selectedSkill = (Skill)skillList[idx];
+        Debug.Log("貌似正在思考" + ((Skill)skillList[idx]).name + "...");
     }
 }

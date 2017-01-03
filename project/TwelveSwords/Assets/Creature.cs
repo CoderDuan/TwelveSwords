@@ -14,9 +14,15 @@ public class Creature
     public int mp;
     public int maxMp;
     public int atk;
-    public int def;
     public int mag;
     public string name;
+
+    public List<Buff> buffList = new List<Buff>();
+
+    public List<Skill> skillList = new List<Skill>();
+
+    //public List<PassiveSkill> passiveSkillList = new List<PassiveSkill>();
+    //public PassiveSkill activePassiveSkill;
 
     public Creature()
     {
@@ -27,34 +33,22 @@ public class Creature
     {
 
     }
-
-    public List<Skill> skillList = new List<Skill>();
-    //public List<PassiveSkill> passiveSkillList = new List<PassiveSkill>();
-    //public PassiveSkill activePassiveSkill;
     public virtual int takeDamage(int damage, DamageType type)
     {
+        // 检查buff列表中是否有增伤或者减伤buff
         int dmg = damage;
-        switch(type)
-        {
-            case DamageType.PHYSICAL:
-                dmg = dmg - def;
-                if (dmg < 0)
-                    dmg = 0;
-                hp -= dmg;
-                break;
-            case DamageType.MAGICAL:
-                hp -= dmg;
-                break;
-            default:
-                hp -= dmg;
-                break;
-        }
+        hp -= dmg;
         if (hp < 0) hp = 0;
         return dmg;
     }
 
     public void applyBuff()
     {
-        // TBD
+        // 处理持续伤害buff
+    }
+
+    public void buffTakeTurn()
+    {
+
     }
 }
