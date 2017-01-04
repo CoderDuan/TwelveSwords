@@ -582,10 +582,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1771415470}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a3cc22649c6a0b43831af8599f4c573, type: 3}
+  m_Script: {fileID: 11500000, guid: c24f6194b6ebfc24e9955d0ca0d0479b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  proficientChanged: 1
 --- !u!4 &1771415472
 Transform:
   m_ObjectHideFlags: 0
@@ -738,7 +737,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 2f7a53f3e102c7045a60ec1be60954a7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4004987a8227f6f4aa6fba6ca451c5c7, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -761,11 +760,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1907849068}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fde6b1bf876d3b458ef00293a144cff, type: 3}
+  m_Script: {fileID: 11500000, guid: 1cbfd98091cbc724abab4724ddcbef1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   panel: {fileID: 1907849068}
-  cellPrefab: {fileID: 1780498285646246, guid: 79ed9589d017fbc49a6659f26fd51479, type: 2}
+  cellPrefab: {fileID: 1780498285646246, guid: 7dde45e80047c044eae4bcf21283a737, type: 2}
   heroContainer: {fileID: 1771415471}
 --- !u!114 &1907849073
 MonoBehaviour:
