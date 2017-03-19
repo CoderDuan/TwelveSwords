@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="GBK" ?>
+<!DOCTYPE skills [
+  <!ELEMENT skill ANY> 
+  <!ATTLIST skill id ID #REQUIRED>]>
+<skills>
+	<skill id = "skill_fireball"
+		name = "火球术"
+		type = "1"
+		level = "0"
+		usable = "0"
+		cost = "1"
+		damage = "(max(2d6) + 3) * mag"
+		description = "将魔力汇聚到手上，产生热量聚成火球，向目标激射出去，是最基础的法术"
+		max_proficient = "3"
+		proficient = "3"
+		is_locked = "false"
+		proficient_1 = "精通1：当第二次数值大于第一次时，伤害增加50%"
+		proficient_2 = "精通2：当第二次数值大于第一次两倍时，本次施法不耗蓝"
+		proficient_3 = "精通3：当第二次数值大于第一次三倍时，额外发射一枚同效果的火球">
+	</skill>
+</skills>

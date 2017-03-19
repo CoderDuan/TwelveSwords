@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="GBK" ?>
+<!DOCTYPE monster [
+  <!ELEMENT property ANY>
+  <!ELEMENT skills ANY>
+  <!ELEMENT passive ANY>
+  <!ATTLIST property category ID #REQUIRED>
+  <!ATTLIST skills category ID #REQUIRED>
+  <!ATTLIST passive category ID #REQUIRED>]>
+
+<monster>
+	<property
+		category = "property"
+		name = "Skull Warrior"
+		hp = "50"
+		attack = "1"
+		magic = "1"
+		description = "由亡灵之力控制的骷髅战士"
+	/>
+	
+	<skills
+		category = "skills"
+	/>
+	
+	<passive
+		category = "passive"
+	/>
+</monster>
