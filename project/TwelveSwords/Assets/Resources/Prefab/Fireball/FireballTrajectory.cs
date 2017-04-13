@@ -7,7 +7,6 @@ public class FireballTrajectory : MonoBehaviour {
 
 	public GameObject obj;
 	public Image img;
-	public Controller.State state;
 	public Controller controller;
 
 	public Vector2 start = new Vector2(-467.5f, 70);
@@ -21,10 +20,17 @@ public class FireballTrajectory : MonoBehaviour {
 	public float expand = 0.5f;
 	private float expanding;
 
+	void disturb()
+	{
+		destination.x += Random.Range (-15.0f, 15.0f);
+		destination.y += Random.Range (-15.0f, 15.0f);
+	}
+
 	// Use this for initialization
 	void Start () {
 		expanding = obj.transform.localScale.x * 2.0f;
 		controller = GameObject.Find ("ControllerObj").GetComponent<Controller> ();
+		disturb ();
 		velocity = (destination - start) / duration;
 		//setBaseProperty (start, destination, duration);		
 		Vector2 pos = obj.GetComponent<RectTransform>().anchoredPosition;
@@ -67,8 +73,8 @@ public class FireballTrajectory : MonoBehaviour {
 				} 
 				else 
 				{
-					if (controller)
-						controller.setState (state);
+					if (controller) 
+						controller.recieveEffectResponse (obj.GetComponent<Identity>().stage);
 					controller = null;
 					Destroy (obj);
 					obj = null;

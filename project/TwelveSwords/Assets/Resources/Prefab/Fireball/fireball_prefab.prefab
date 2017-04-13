@@ -82,14 +82,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   obj: {fileID: 1561178873561920}
   img: {fileID: 114538542749481488}
-  state: 0
   controller: {fileID: 0}
   start: {x: -467.5, y: 70}
-  destination: {x: 467.5, y: 45}
+  destination: {x: 467.5, y: 70}
   rotate: 24
   alpha: 1
   delay: 0
-  duration: 1.5
+  duration: 1.2
   expand: 0.5
 --- !u!222 &222190883861188628
 CanvasRenderer:

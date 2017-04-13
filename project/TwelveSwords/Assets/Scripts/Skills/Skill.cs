@@ -34,6 +34,7 @@ abstract public class Skill
     public string description;
 
     public string skillId;
+	public string prefabPath;
 
     // other display information
 	public string damageFormula;

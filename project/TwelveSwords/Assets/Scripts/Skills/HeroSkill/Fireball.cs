@@ -12,6 +12,7 @@ public class Fireball : Skill
     public Fireball()
     {
         skillId = "skill_fireball";
+		prefabPath = "Prefab/Fireball/fireball_prefab";
         name = "火球术";
 		type = SkillType.MAGICAL;
         level = SkillLevel.PRIMARY;

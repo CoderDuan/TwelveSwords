@@ -114,9 +114,10 @@ public class Controller : MonoBehaviour {
 		STATE_DICE_2,
 		STATE_PROFICIENT,
 		STATE_SKILL_ANI,
-		STATE_EFFECT,
-		STATE_COUNTER,
-		STATE_COUNTER_EFFECT
+		//STATE_EFFECT,
+		//STATE_COUNTER,
+		//STATE_COUNTER_EFFECT
+		STATE_JUDGEMENT
     }
 
 	public void setState(State s)
@@ -261,7 +262,7 @@ public class Controller : MonoBehaviour {
 			idx = response.proficient [size];
 			// dont forget state
 			createScrollingText (pos, scroll.selectedSkill.proficientName [idx], MyColor.ProficientColor [idx],
-				delay, 2.4f, this, state/*State.STATE_SKILL_ANI*/);
+				delay, 2.4f, null, state/*State.STATE_SKILL_ANI*/);
 			delay += 0.4f;
 
 			return delay;
@@ -296,6 +297,46 @@ public class Controller : MonoBehaviour {
 		return 0.0f;
 	}
 
+	public float generateSkillEffect()
+	{
+		float delay = 0.0f;
+		for (int i = 0; i < response.effects.Count; i++) 
+		{
+			StartCoroutine(DelayToInvoke.DelayToInvokeDo(
+				()=>{
+					GameObject effect_prefab = Resources.Load<GameObject> (scroll.selectedSkill.prefabPath);
+					GameObject traj = Instantiate (effect_prefab,canvas.transform);
+					traj.GetComponent<Identity>().stage = i;
+					traj = null;
+					effect_prefab = null;
+				}, delay));
+			delay += 0.2f;
+		}
+		return delay;
+	}
+
+	// When recieve a SingleEffectResponse
+	public void recieveEffectResponse(int stage)
+	{
+		Creature self, opponent;
+		if (turnState == Turn.HERO) 
+		{
+			self = hero;
+			opponent = monster;
+		}
+		else
+		{
+			self = monster;
+			opponent = hero;
+		}
+
+		if (stage == response.effects.Count - 1)
+			state = State.STATE_JUDGEMENT;
+
+		self = null;
+		opponent = null;
+	}
+
 	// Use this for initialization
 	void Start () {
 		Hturn = 0;
@@ -307,6 +348,9 @@ public class Controller : MonoBehaviour {
 
         turnState = Turn.HERO;
 		state = State.STATE_DICE_1;//State.STATE_WAIT;
+		//Debug.Log();
+		int seed = (int)(long.Parse(System.DateTime.Now.ToString ("yyyyMMddHHmmssfff")) % int.MaxValue);
+		Random.InitState (seed);	
 
         hero = ((HeroContainer)GameObject.Find("Hero").transform.GetComponent<HeroContainer>()).hero;
         //monster = new Orc();
@@ -333,8 +377,8 @@ public class Controller : MonoBehaviour {
                     {
                         // random dice 1
                         // init animation and play
-                        // random a value
-                        dice1 = Random.Range(1, 7);
+						// random a value
+						dice1 = Random.Range(1, 7);
                         // reset position
                         dice1_obj.GetComponent<RectTransform>().anchoredPosition = dice1_pos + new Vector2(Random.Range(-30, 31), Random.Range(-30, 31));
                         // set active
@@ -420,26 +464,7 @@ public class Controller : MonoBehaviour {
 						float h = hero_hp_bar.sizeDelta.y;
 						hero_mp_bar.sizeDelta = new Vector2(((float)hero.mp) / ((float)hero.maxMp) * 233.0f, h);
 
-						GameObject effect_prefab = Resources.Load<GameObject> ("Prefab/Fireball/fireball_prefab");
-						float delay = 0.0f;
-						for (int i = 0; i < response.effects.Count-1; i++) 
-						{
-							StartCoroutine(DelayToInvoke.DelayToInvokeDo(
-							()=>{
-									GameObject traj = Instantiate (effect_prefab,canvas.transform);
-									traj.GetComponent<Identity>().stage = i;
-									traj = null;
-								}, delay));
-							delay += 0.2f;
-						}
-
-						StartCoroutine(DelayToInvoke.DelayToInvokeDo(
-							()=>{
-								GameObject traj = Instantiate (effect_prefab,canvas.transform);
-								traj.GetComponent<Identity>().stage = response.effects.Count-1;
-								traj = null;
-								effect_prefab = null;
-							}, delay));
+						generateSkillEffect ();
 						
 						//effect_prefab = null;
 
@@ -447,9 +472,9 @@ public class Controller : MonoBehaviour {
 						//state = State.STATE_EFFECT;
                         return;
                     }
-					case State.STATE_EFFECT:
+					case State.STATE_JUDGEMENT:
                     {
-						
+						Debug.Log ("JUDGEMENT");
 
 						state = State.STATE_WAIT;
                         return;
