@@ -13,7 +13,7 @@ public class Fireball : Skill
     {
         skillId = "skill_fireball";
         name = "火球术";
-		type = DamageType.MAGICAL;
+		type = SkillType.MAGICAL;
         level = SkillLevel.PRIMARY;
         usable = SkillUsable.UNIVERSAL;
         cost = 1;
@@ -43,55 +43,52 @@ public class Fireball : Skill
         return ret;
     }
 
-    public override SkillEffectResponse apply(Creature from, Creature to, int dice1, int dice2)
+    public override SkillEffectResponse apply(Creature from, int dice1, int dice2)
     {
-		// Calculate damage, buffs
+		// Calculate damage, and apply buffs
         SkillEffectResponse response = new SkillEffectResponse();
 		response.type = type;
-        response.damage = new List<int>();
-        response.proficient = new List<bool>();
-        response.mana = new List<int>();
+		response.color = MyColor.FireballColor;
+		response.proficient = new List<int>();
 
-        float damage = (Dice.max(dice1, dice2) + 3) * from.mag * (1.0f + from.damage_increment);
-        int manacost = cost;
+		// change: + means recovery, - means damage/cost
+		response.effects = new List<SingleEffectResponse>();
+		response.effects.Add (new SingleEffectResponse ());
+		//response.opponent_hp_change = new List<int>();
+		//response.self_mp_change = new List<int>();
+
+        float damage = - (Dice.max(dice1, dice2) + 3) * from.mag * (1.0f + from.damage_increment);
+        int manacost = -cost;
 
         if (proficient >= 1 && dice2 > dice1)
         {
             damage *= 1.5f;
-            response.proficient.Add(true);
+            response.proficient.Add(0);
         }
-        else
-        {
-            response.proficient.Add(false);
-        }
-        response.damage.Add((int)damage);
+
+		//response.opponent_hp_change.Add((int)damage);
+		response.effects[0].opponent_hp_change = ((int)damage);
 
         if (proficient >= 2 && dice2 > dice1 * 2)
         {
             manacost = 0;
-            response.proficient.Add(true);
+            response.proficient.Add(1);
         }
-        else
-        {
-            response.proficient.Add(false);
-        }
+
+		response.effects [0].self_mp_change = manacost;
 
         if (dice2 > dice1 * 3)
-        {
-            response.damage.Add((int)damage);
-            response.proficient.Add(true);
-        }
-        else
-        {
-            response.proficient.Add(false);
+		{
+			response.effects.Add (new SingleEffectResponse (response.effects[0]));
+            response.proficient.Add(2);
         }
 
-        response.mana.Add(manacost);
+		//response.self_mp_change.Add(manacost);
 
-        from.mp -= manacost;
+        from.mp += manacost;
         
 		// Apply all effect to target
-		to.takeDamage(response);
+		//to.takeDamage(response);
 		// no need to calculate counter attack
 
         return response;

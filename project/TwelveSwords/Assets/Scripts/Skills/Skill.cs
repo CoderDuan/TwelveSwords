@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 
-public enum DamageType
+public enum SkillType
 {
     PHYSICAL = 0,
-    MAGICAL
+    MAGICAL,
+	RECOVERY
 };
 
 public enum SkillLevel : int
@@ -22,7 +23,7 @@ public enum SkillUsable : int
 
 abstract public class Skill
 {
-    public DamageType type;
+	public SkillType type;
     public SkillLevel level;
     public SkillUsable usable;
     public int cost;
@@ -43,5 +44,5 @@ abstract public class Skill
 
 	public abstract float[] getProbability(int dice1);
 
-	public abstract SkillEffectResponse apply(Creature from, Creature to, int dice1, int dice2);
+	public abstract SkillEffectResponse apply(Creature from, int dice1, int dice2);
 }

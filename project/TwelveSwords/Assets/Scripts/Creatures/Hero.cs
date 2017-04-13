@@ -26,7 +26,7 @@ public class Hero : Creature
         exp = 0;
         level = 1;
 
-        name = "段景耀";
+        name = "Luke";
         hp = 50;
         maxHp = 50;
         mp = 30;
@@ -35,26 +35,9 @@ public class Hero : Creature
         mag = 1;
     }
 
-	public void takeCounterAttack(SkillEffectResponse response)
-	{
-		if (response.counterattack == null)
-			return;
-		int size = response.counterattack.Count;
-		int damageCount = 0;
-		response.counterhp = new List<int> ();
-		for (int i=0;i<size;i++)
-		{
-			damageCount += response.counterattack[i];
-			response.counterhp.Add (hp - damageCount);
-		}
-		int newhp = hp - damageCount;
-		newhp = newhp < 0 ? 0 : newhp;
-		hp = newhp;
-		response.counterhp [response.counterhp.Count - 1] = hp;
-	}
-
-	public override void takeDamage (SkillEffectResponse response)
+	public override CounterEffectResponse takeDamage (SkillEffectResponse response)
 	{
 		takeDamagePrimary (response);
+		return null;
 	}
 }

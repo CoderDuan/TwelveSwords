@@ -16,6 +16,7 @@ public class Controller : MonoBehaviour {
     // about skill
     public SKillScroll scroll;
     private SkillEffectResponse response = null;
+	private CounterEffectResponse counter = null;
 
     public GameObject dice1_obj;
     public GameObject dice2_obj;
@@ -48,6 +49,7 @@ public class Controller : MonoBehaviour {
 	// Float text
 	public GameObject left_prefab;
 	public GameObject right_prefab;
+	public GameObject scrolling_text;
 
 	// Attacking
 	public GameObject blink_attack;
@@ -68,60 +70,81 @@ public class Controller : MonoBehaviour {
     {
         VICTORY = 0,
         DEFEATED,
+//
+//		// Vision 1
+//		// State flow
+//        PREPARE_BEFROE_START_ANI,
+//        ING_BEFROE_START_ANI,
+//
+//        PREPARE_BUFF_EFFECT_ANI,
+//        ING_BUFF_EFFECT_ANI,
+//        BUFF_EFFECT_JUDEMENT,
+//
+//        //END_BUFF_EFFECT_ANI,
+//        PREPARE_DICE_1_ANI, // DICE_1 random
+//        ING_DICE_1_ANI,
+//
+//        SELECT_SKILL, // PREPARE_SKILL_SELECT_ANI
+//        ING_SELECT_SKILL_ANI,
+//
+//        PREPARE_DICE_2_ANI, // DICE_1 random
+//        ING_DICE_2_ANI,
+//
+//        // APPLY SKILLS
+//        PREPARE_SKILL_ANI, // APPLY SKILL
+//        ING_SKILL_ANI,
+//        REMOVE_BUFF,
+//        PREPARE_DAMAGE_ANI,
+//        ING_DAMAGE_ANI,
+//        ADD_BUFF,
+//
+//        JUDGEMENT,
+//        BUFF_COUNT,
+//
+//        PREPARE_TURN_END_ANI,
+//        ING_TURN_END_ANI,
 
-        PREPARE_BEFROE_START_ANI,
-        ING_BEFROE_START_ANI,
+		// Vision 2 
+		// State flow
+		STATE_WAIT,
 
-        PREPARE_BUFF_EFFECT_ANI,
-        ING_BUFF_EFFECT_ANI,
-        BUFF_EFFECT_JUDEMENT,
-
-        //END_BUFF_EFFECT_ANI,
-        PREPARE_DICE_1_ANI, // DICE_1 random
-        ING_DICE_1_ANI,
-
-        SELECT_SKILL, // PREPARE_SKILL_SELECT_ANI
-        ING_SELECT_SKILL_ANI,
-
-        PREPARE_DICE_2_ANI, // DICE_1 random
-        ING_DICE_2_ANI,
-
-        // APPLY SKILLS
-        PREPARE_SKILL_ANI, // APPLY SKILL
-        ING_SKILL_ANI,
-        REMOVE_BUFF,
-        PREPARE_DAMAGE_ANI,
-        ING_DAMAGE_ANI,
-        ADD_BUFF,
-
-        JUDGEMENT,
-        BUFF_COUNT,
-
-        PREPARE_TURN_END_ANI,
-        ING_TURN_END_ANI,
+		STATE_DICE_1,
+		STATE_SKILL,
+		STATE_SKILL_APPLY,
+		STATE_DICE_2,
+		STATE_PROFICIENT,
+		STATE_SKILL_ANI,
+		STATE_EFFECT,
+		STATE_COUNTER,
+		STATE_COUNTER_EFFECT
     }
 
-    public void AsyncUpdateState()
-    {
-        switch(state)
-        {
-            case State.ING_DICE_1_ANI:
-            {
-                state = State.SELECT_SKILL;
-                return;
-            }
-            case State.ING_DICE_2_ANI:
-            {
-                state = State.PREPARE_SKILL_ANI;
-                return;
-            }
-            case State.SELECT_SKILL:
-            {
-                state = State.ING_SELECT_SKILL_ANI;
-                return;
-            }
-        }
-    }
+	public void setState(State s)
+	{
+		state = s;
+	}
+
+//    public void AsyncUpdateState()
+//    {
+//        switch(state)
+//        {
+//            case State.ING_DICE_1_ANI:
+//            {
+//                state = State.SELECT_SKILL;
+//                return;
+//            }
+//            case State.ING_DICE_2_ANI:
+//            {
+//                state = State.PREPARE_SKILL_ANI;
+//                return;
+//            }
+//            case State.SELECT_SKILL:
+//            {
+//                state = State.ING_SELECT_SKILL_ANI;
+//                return;
+//            }
+//        }
+//    }
 
     public void NewBattle(Monster new_monster)
     {
@@ -148,6 +171,25 @@ public class Controller : MonoBehaviour {
         monster_atk.text = monster.atk.ToString();
         monster_mag.text = monster.mag.ToString();
     }
+
+	// scrolling text
+	public void createScrollingText(Vector2 pos, string contents, Color color, float delay, float duration, Controller c, State s)
+	{
+		GameObject scrollingTextObj = Instantiate (scrolling_text, canvas.transform);
+		scrollingTextObj.GetComponent<RectTransform> ().anchoredPosition = pos;
+		Text text = scrollingTextObj.GetComponent<Text> ();
+		text.text = contents;
+		text.color = color;
+		ScrollingText scrollingText = scrollingTextObj.GetComponent<ScrollingText> ();
+		scrollingText.delay = delay;
+		scrollingText.setDuration (duration);
+		scrollingText.controller = c;
+		scrollingText.state = s;
+
+		scrollingTextObj = null;
+		scrollingText = null;
+		text = null;
+	}
 
 	public void delayCreateFloatingText (bool is_left, string contents, Color color, float seconds)
 	{
@@ -204,22 +246,52 @@ public class Controller : MonoBehaviour {
 	// 返回总共delay的时间
 	public float displayProficientTexts(bool is_left)
 	{
-		if (response.proficient != null)
+		if (response.proficient != null && response.proficient.Count != 0) {
+			float x = is_left ? -467.5f : 467.5f;
+			float delay = 0.0f;
+			Vector2 pos = new Vector2 (x, 0);
+			int size = response.proficient.Count - 1;
+			int idx;
+			for (int i = 0; i < size; i++) {
+				idx = response.proficient [i];
+				createScrollingText (pos, scroll.selectedSkill.proficientName [idx], MyColor.ProficientColor [idx],
+					delay, 2.4f, null, state);
+				delay += 0.4f;
+			}
+			idx = response.proficient [size];
+			// dont forget state
+			createScrollingText (pos, scroll.selectedSkill.proficientName [idx], MyColor.ProficientColor [idx],
+				delay, 2.4f, this, state/*State.STATE_SKILL_ANI*/);
+			delay += 0.4f;
+
+			return delay;
+		}
+		return 0.0f;
+	}
+
+	public float displaySkillEffect(bool is_left)
+	{
+		if (response.proficient != null) 
 		{
-			float t = 0.2f;
-			if (response.proficient [0])
+			float x = is_left ? -467.5f : 467.5f;
+			float delay = 0.0f;
+			Vector2 pos = new Vector2 (x, 0);
+			int size = response.proficient.Count - 1;
+			int idx;
+			for (int i = 0; i < size; i++) 
 			{
-				delayCreateFloatingText (is_left, scroll.selectedSkill.proficientName [0], MyColor.ProficientColor [0], t); t += 0.25f;
+				idx = response.proficient [i];
+				createScrollingText (pos, scroll.selectedSkill.proficientName [idx], MyColor.ProficientColor [idx],
+					delay, 2.4f, null, state);
+				delay += 0.4f;
 			}
-			if (response.proficient [1])
-			{
-				delayCreateFloatingText (is_left, scroll.selectedSkill.proficientName [1], MyColor.ProficientColor [1], t); t += 0.25f;
-			}
-			if (response.proficient [2])
-			{
-				delayCreateFloatingText (is_left, scroll.selectedSkill.proficientName [2], MyColor.ProficientColor [2], t); t += 0.25f;
-			}
-			return t == 0.2f ? t : t - 0.25f; 
+			idx = response.proficient [size];
+			// dont forget state
+			createScrollingText (pos, scroll.selectedSkill.proficientName [idx], MyColor.ProficientColor [idx],
+				delay, 2.4f, this, State.STATE_SKILL_ANI);
+			delay += 0.4f;
+
+			return delay;
 		}
 		return 0.0f;
 	}
@@ -230,9 +302,11 @@ public class Controller : MonoBehaviour {
         Mturn = 0;
         dice1 = 1;
         dice2 = 1;
+		dice1_obj.GetComponent<DiceRoll> ().state = State.STATE_SKILL;
+		dice2_obj.GetComponent<DiceRoll> ().state = State.STATE_PROFICIENT;
 
         turnState = Turn.HERO;
-        state = State.PREPARE_BEFROE_START_ANI;
+		state = State.STATE_DICE_1;//State.STATE_WAIT;
 
         hero = ((HeroContainer)GameObject.Find("Hero").transform.GetComponent<HeroContainer>()).hero;
         //monster = new Orc();
@@ -255,45 +329,7 @@ public class Controller : MonoBehaviour {
                     {
                         return;
                     }
-                    case State.PREPARE_BEFROE_START_ANI:
-                    {
-                        // before battle start
-                        // init animation and play
-
-                        state = State.ING_BEFROE_START_ANI;
-                        return;
-                    }
-                    case State.ING_BEFROE_START_ANI:
-                    {
-                        // do nothing
-                        // animation finish event will call 
-
-                        state = State.PREPARE_BUFF_EFFECT_ANI;
-                        return;
-                    }
-                    case State.PREPARE_BUFF_EFFECT_ANI:
-                    {
-                        // calculate the damage of continuous BUFF
-                        // init animation and play
-
-                        state = State.ING_BUFF_EFFECT_ANI;
-                        return;
-                    }
-                    case State.ING_BUFF_EFFECT_ANI:
-                    {
-                        // do nothing
-                        // animation finish event will call 
-                        state = State.BUFF_EFFECT_JUDEMENT;
-                        return;
-                    }
-                    case State.BUFF_EFFECT_JUDEMENT:
-                    {
-                        // judge if some one win
-
-                        state = State.PREPARE_DICE_1_ANI;
-                        return;
-                    }
-                    case State.PREPARE_DICE_1_ANI:
+					case State.STATE_DICE_1:
                     {
                         // random dice 1
                         // init animation and play
@@ -312,34 +348,29 @@ public class Controller : MonoBehaviour {
 						Hturn++;
 						heroTurn.text = "HTurn : " + Hturn.ToString ();	
 
-                        state = State.ING_DICE_1_ANI;
+						state = State.STATE_WAIT;
                         return;
                     }
-                    case State.ING_DICE_1_ANI:
-                    {
-                        // do nothing
-                        // animation finish event will call 
-                        // state = State.SELECT_SKILL;
-                        return;
-                    }
-                    case State.SELECT_SKILL:
+					case State.STATE_SKILL:
                     {
                         // do nothing
                         // player select skill in gui
 
-                        //state = State.ING_SELECT_SKILL_ANI;
+						state = State.STATE_WAIT;
                         return;
                     }
-                    case State.ING_SELECT_SKILL_ANI:
+					case State.STATE_SKILL_APPLY:
                     {
                         // do nothing
                         // (later) animation finish event will call 
-						delayCreateFloatingText(true, scroll.selectedSkill.name, MyColor.SkillColor, 0.1f);
+						//delayCreateFloatingText(true, scroll.selectedSkill.name, MyColor.SkillColor, 0.1f);
+						createScrollingText (new Vector2 (-467.5f, 0.0f), scroll.selectedSkill.name, MyColor.SkillColor
+							, 0.1f, 0.6f, this, State.STATE_DICE_2);
 
-                        state = State.PREPARE_DICE_2_ANI;
+                        state = State.STATE_WAIT;
                         return;
                     }
-                    case State.PREPARE_DICE_2_ANI:
+					case State.STATE_DICE_2:
                     {
                         // random dice 2
                         // init animation and play
@@ -355,145 +386,167 @@ public class Controller : MonoBehaviour {
                         dice2_obj.GetComponent<Animation>().Play("Dice");
 
                         // apply skill
-                        response = scroll.selectedSkill.apply(hero, monster, dice1, dice2);
-						// 下面这些都已经放到apply中实现
-                        // updateBuffList with buff manager
-                        // updateDamageEffect with buf manager
-                        //monster.takeDamage(response);
-						//hero.takeCounterAttack (response);
+                        response = scroll.selectedSkill.apply(hero, dice1, dice2);
+						// opponent take damage
+						//counter = monster.takeDamage(response);
+						// apply counter
+						//hero.takeCounterEffect(counter);
+						// till now, response and counter are ready to display
 
 						// 显示精通文本
-						displayProficientTexts (true);
+						//displayProficientTexts (true);
 
+						// change hp and mp in gui
+						//hero_mp.text = hero.mp.ToString();
+						//float h = hero_hp_bar.sizeDelta.y;
+						//hero_mp_bar.sizeDelta = new Vector2(((float)hero.mp) / ((float)hero.maxMp) * 233.0f, h);
+
+						state = State.STATE_WAIT;
+                        return;
+                    }
+					case State.STATE_PROFICIENT:
+                    {
+						float delay = displayProficientTexts(true);
+						//if (delay == 0.0f)
+							state = State.STATE_SKILL_ANI;
+						//else
+							//state = State.STATE_WAIT;
+                        return;
+                    }
+					case State.STATE_SKILL_ANI:
+                    {
 						// change hp and mp in gui
 						hero_mp.text = hero.mp.ToString();
 						float h = hero_hp_bar.sizeDelta.y;
 						hero_mp_bar.sizeDelta = new Vector2(((float)hero.mp) / ((float)hero.maxMp) * 233.0f, h);
 
-                        state = State.ING_DICE_2_ANI;
-                        return;
-                    }
-                    case State.ING_DICE_2_ANI:
-                    {
-                        // do nothing
-                        // animation finish event will call 
-                        state = State.PREPARE_SKILL_ANI;
-                        return;
-                    }
-                    case State.PREPARE_SKILL_ANI:
-                    {
-                        // init skill animation and play
-
-                        state = State.ING_SKILL_ANI;
-                        return;
-                    }
-                    case State.ING_SKILL_ANI:
-                    {
-                        // do nothing
-                        // animation finish event will call 
-                        state = State.REMOVE_BUFF;
-                        return;
-                    }
-                    case State.REMOVE_BUFF:
-                    {
-                        // remove some buff according to skilleffectresponse
-
-                        state = State.ADD_BUFF;
-                        return;
-                    }
-                    case State.ADD_BUFF:
-                    {
-                        // add some buff according to skilleffectresponse
-
-                        state = State.PREPARE_DAMAGE_ANI;
-                        return;
-                    }
-                    case State.PREPARE_DAMAGE_ANI:
-                    {
-						float time = 0.1f;
-                        // init animation with damage and play
-						for (int i=0;i<response.damage.Count;i++)
+						GameObject effect_prefab = Resources.Load<GameObject> ("Prefab/Fireball/fireball_prefab");
+						float delay = 0.0f;
+						for (int i = 0; i < response.effects.Count-1; i++) 
 						{
-							time += i * 0.12f;
-							// blink attack
-							delayCreateBlinkAttack(MyColor.FireballColor, false, time);
-
-							// damage floating text
-							delayCreateFloatingText(false, "-"+response.damage[i].ToString(), MyColor.HpColor, time);
-
-							// target shaking
-							monster_obj.GetComponent<Animation>().Play("Shake");
-
-							// hp decrease
-							delayHPMPDecrease(monster_bar, monster_hp, response.hp[i], monster.maxHp, time);
-						}
-
-						// counterattack
-						if (response.counterattack != null) {
-							for (int i = 0; i < response.counterattack.Count; i++) {
-								time += (i + 1) * 0.12f;
-								// blink counterattack
-								delayCreateBlinkAttack (MyColor.CounterAttackColor, true, time);
-
-								// counterattack floating text
-								delayCreateFloatingText (true, "-" + response.counterattack [i].ToString (), MyColor.HpColor, time);
-
-								// target shaking
-								hero_obj.GetComponent<Animation> ().Play ("Shake");
-
-								// hp decrease
-								delayHPMPDecrease (hero_hp_bar, hero_hp, response.counterhp [i], hero.maxHp, time);
-							}
+							StartCoroutine(DelayToInvoke.DelayToInvokeDo(
+							()=>{
+									GameObject traj = Instantiate (effect_prefab,canvas.transform);
+									traj.GetComponent<Identity>().stage = i;
+									traj = null;
+								}, delay));
+							delay += 0.2f;
 						}
 
 						StartCoroutine(DelayToInvoke.DelayToInvokeDo(
 							()=>{
-								state = State.JUDGEMENT;
-							}, time + 0.15f));
+								GameObject traj = Instantiate (effect_prefab,canvas.transform);
+								traj.GetComponent<Identity>().stage = response.effects.Count-1;
+								traj = null;
+								effect_prefab = null;
+							}, delay));
+						
+						//effect_prefab = null;
 
-                        state = State.ING_DAMAGE_ANI;
+						state = State.STATE_WAIT;
+						//state = State.STATE_EFFECT;
                         return;
                     }
-                    case State.ING_DAMAGE_ANI:
+					case State.STATE_EFFECT:
                     {
-                        // do nothing
-                        // animation finish event will call 
-                        //state = State.JUDGEMENT;
-                        return;
-                    }
-                    case State.JUDGEMENT:
-                    {
-                        // before judge
-                       
-                        // judge if some one win
+						
 
-                        state = State.BUFF_COUNT;
+						state = State.STATE_WAIT;
                         return;
                     }
-                    case State.BUFF_COUNT:
-                    {
-						// all turns of buff minus 1 
-
-                        state = State.PREPARE_TURN_END_ANI;
-                        return;
-                    }
-                    case State.PREPARE_TURN_END_ANI:
-                    {
-						// prepare turn ending animation and play
-
-                        state = State.ING_TURN_END_ANI;
-                        return;
-                    }
-                    case State.ING_TURN_END_ANI:
-                    {
-                        // do nothing
-						// animation finish event will call 
-
-                        // new turn with monster
-                        turnState = Turn.MONSTER;
-						state = State.PREPARE_BEFROE_START_ANI;
-                        return;
-                    }
+//                    case State.ADD_BUFF:
+//                    {
+//                        // add some buff according to skilleffectresponse
+//
+//                        state = State.PREPARE_DAMAGE_ANI;
+//                        return;
+//                    }
+//                    case State.PREPARE_DAMAGE_ANI:
+//                    {
+//						float time = 0.1f;
+//                        // init animation with damage and play
+//						for (int i=0;i<response.damage.Count;i++)
+//						{
+//							time += i * 0.12f;
+//							// blink attack
+//							delayCreateBlinkAttack(MyColor.FireballColor, false, time);
+//
+//							// damage floating text
+//							delayCreateFloatingText(false, "-"+response.damage[i].ToString(), MyColor.HpColor, time);
+//
+//							// target shaking
+//							monster_obj.GetComponent<Animation>().Play("Shake");
+//
+//							// hp decrease
+//							delayHPMPDecrease(monster_bar, monster_hp, response.hp[i], monster.maxHp, time);
+//						}
+//
+//						// counterattack
+//						if (response.counterattack != null) {
+//							for (int i = 0; i < response.counterattack.Count; i++) {
+//								time += (i + 1) * 0.12f;
+//								// blink counterattack
+//								delayCreateBlinkAttack (MyColor.CounterAttackColor, true, time);
+//
+//								// counterattack floating text
+//								delayCreateFloatingText (true, "-" + response.counterattack [i].ToString (), MyColor.HpColor, time);
+//
+//								// target shaking
+//								hero_obj.GetComponent<Animation> ().Play ("Shake");
+//
+//								// hp decrease
+//								delayHPMPDecrease (hero_hp_bar, hero_hp, response.counterhp [i], hero.maxHp, time);
+//							}
+//						}
+//
+//						StartCoroutine(DelayToInvoke.DelayToInvokeDo(
+//							()=>{
+//								state = State.JUDGEMENT;
+//							}, time + 0.15f));
+//
+//                        state = State.ING_DAMAGE_ANI;
+//                        return;
+//                    }
+//                    case State.ING_DAMAGE_ANI:
+//                    {
+//                        // do nothing
+//                        // animation finish event will call 
+//                        //state = State.JUDGEMENT;
+//                        return;
+//                    }
+//                    case State.JUDGEMENT:
+//                    {
+//                        // before judge
+//                       
+//                        // judge if some one win
+//
+//                        state = State.BUFF_COUNT;
+//                        return;
+//                    }
+//                    case State.BUFF_COUNT:
+//                    {
+//						// all turns of buff minus 1 
+//
+//                        state = State.PREPARE_TURN_END_ANI;
+//                        return;
+//                    }
+//                    case State.PREPARE_TURN_END_ANI:
+//                    {
+//						// prepare turn ending animation and play
+//
+//                        state = State.ING_TURN_END_ANI;
+//                        return;
+//                    }
+//                    case State.ING_TURN_END_ANI:
+//                    {
+//                        // do nothing
+//						// animation finish event will call 
+//
+//                        // new turn with monster
+//                        turnState = Turn.MONSTER;
+//						state = State.PREPARE_BEFROE_START_ANI;
+//                        return;
+//                    }
                 }
 				break;
             }
@@ -509,176 +562,176 @@ public class Controller : MonoBehaviour {
                     {
                         return;
                     }
-                    case State.PREPARE_BEFROE_START_ANI:
-                    {
-                        // before battle start
-						// init animation and play
-
-                        state = State.ING_BEFROE_START_ANI;
-                        return;
-                    }
-                    case State.ING_BEFROE_START_ANI:
-                    {
-                        // do nothing
-                        // animation finish event will call 
-
-                        state = State.PREPARE_BUFF_EFFECT_ANI;
-                        return;
-                    }
-                    case State.PREPARE_BUFF_EFFECT_ANI:
-                    {
-                        // calculate the damage of continuous BUFF
-                        // init animation and play
-
-                        state = State.ING_BUFF_EFFECT_ANI;
-                        return;
-                    }
-                    case State.ING_BUFF_EFFECT_ANI:
-                    {
-                        // do nothing
-                        // animation finish event will call 
-						state = State.BUFF_EFFECT_JUDEMENT;
-                        return;
-                    }
-                    case State.BUFF_EFFECT_JUDEMENT:
-                    {
-                        // judge if some one win
-
-                        state = State.PREPARE_DICE_1_ANI;
-                        return;
-                    }
-                    case State.PREPARE_DICE_1_ANI:
-                    {
-                        // random dice 1
-						// init animation and play
-						Mturn++;
-						monsterTurn.text = Mturn.ToString() + " : MTurn";
-
-                        state = State.ING_DICE_1_ANI;
-                        return;
-                    }
-                    case State.ING_DICE_1_ANI:
-                    {
-                        // do nothing
-                        // animation finish event will call 
-						state = State.SELECT_SKILL;
-                        return;
-                    }
-                    case State.SELECT_SKILL:
-                    {
-                        // choose which skill to use
-                        // according to turn
-
-                        state = State.ING_SELECT_SKILL_ANI;
-                        return;
-                    }
-                    case State.ING_SELECT_SKILL_ANI:
-                    {
-                        // do nothing
-                        // (later) animation finish event will call 
-
-                        state = State.PREPARE_DICE_2_ANI;
-                        return;
-                    }
-                    case State.PREPARE_DICE_2_ANI:
-                    {
-                        // random dice 2
-                        // init animation and play
-
-                        state = State.ING_DICE_2_ANI;
-                        return;
-                    }
-                    case State.ING_DICE_2_ANI:
-                    {
-                        // do nothing
-                        // animation finish event will call 
-						state = State.PREPARE_SKILL_ANI;
-                        return;
-                    }
-                    case State.PREPARE_SKILL_ANI:
-                    {
-                        // init skill animation and play
-
-                        state = State.ING_SKILL_ANI;
-                        return;
-                    }
-                    case State.ING_SKILL_ANI:
-                    {
-                        // do nothing
-                        // animation finish event will call 
-						state = State.REMOVE_BUFF;
-                        return;
-                    }
-                    case State.REMOVE_BUFF:
-                    {
-                        // remove some buff according to skill
-
-                        state = State.ADD_BUFF;
-                        return;
-                    }
-                    case State.ADD_BUFF:
-                    {
-                        // add some buff according to skill
-
-                        state = State.PREPARE_DAMAGE_ANI;
-                        return;
-                    }
-                    case State.PREPARE_DAMAGE_ANI:
-                    {
-                        // init animation with damage and play
-
-                        state = State.ING_DAMAGE_ANI;
-                        return;
-                    }
-                    case State.ING_DAMAGE_ANI:
-                    {
-                        // do nothing
-                        // animation finish event will call 
-                        state = State.JUDGEMENT;
-                        return;
-                    }
-                    case State.JUDGEMENT:
-                    {
-                        // judge if some one win
-
-                        state = State.BUFF_COUNT;
-                        return;
-                    }
-                    case State.BUFF_COUNT:
-                    {
-                        // all turns of buff minus 1 
-
-                        state = State.PREPARE_TURN_END_ANI;
-
-						// for test
-						StartCoroutine(DelayToInvoke.DelayToInvokeDo(
-							()=>{
-								state = State.ING_TURN_END_ANI;
-							}, 1.85f));
-						
-                        return;
-                    }
-                    case State.PREPARE_TURN_END_ANI:
-                    {
-                        // prepare turn ending animation and play
-
-                        //state = State.ING_TURN_END_ANI;
-                        return;
-                    }
-                    case State.ING_TURN_END_ANI:
-                    {
-                        // do nothing
-                        // animation finish event will call 
-
-						// clean all stage
-						dice1_obj.SetActive(false);
-						dice2_obj.SetActive (false);
-						//scroll.selectedSkill = null;
-                        // new turn with hero
-                        turnState = Turn.HERO;
-                        state = State.PREPARE_BUFF_EFFECT_ANI;
-                        return;
-                    }
+//                    case State.PREPARE_BEFROE_START_ANI:
+//                    {
+//                        // before battle start
+//						// init animation and play
+//
+//                        state = State.ING_BEFROE_START_ANI;
+//                        return;
+//                    }
+//                    case State.ING_BEFROE_START_ANI:
+//                    {
+//                        // do nothing
+//                        // animation finish event will call 
+//
+//                        state = State.PREPARE_BUFF_EFFECT_ANI;
+//                        return;
+//                    }
+//                    case State.PREPARE_BUFF_EFFECT_ANI:
+//                    {
+//                        // calculate the damage of continuous BUFF
+//                        // init animation and play
+//
+//                        state = State.ING_BUFF_EFFECT_ANI;
+//                        return;
+//                    }
+//                    case State.ING_BUFF_EFFECT_ANI:
+//                    {
+//                        // do nothing
+//                        // animation finish event will call 
+//						state = State.BUFF_EFFECT_JUDEMENT;
+//                        return;
+//                    }
+//                    case State.BUFF_EFFECT_JUDEMENT:
+//                    {
+//                        // judge if some one win
+//
+//                        state = State.PREPARE_DICE_1_ANI;
+//                        return;
+//                    }
+//                    case State.PREPARE_DICE_1_ANI:
+//                    {
+//                        // random dice 1
+//						// init animation and play
+//						Mturn++;
+//						monsterTurn.text = Mturn.ToString() + " : MTurn";
+//
+//                        state = State.ING_DICE_1_ANI;
+//                        return;
+//                    }
+//                    case State.ING_DICE_1_ANI:
+//                    {
+//                        // do nothing
+//                        // animation finish event will call 
+//						state = State.SELECT_SKILL;
+//                        return;
+//                    }
+//                    case State.SELECT_SKILL:
+//                    {
+//                        // choose which skill to use
+//                        // according to turn
+//
+//                        state = State.ING_SELECT_SKILL_ANI;
+//                        return;
+//                    }
+//                    case State.ING_SELECT_SKILL_ANI:
+//                    {
+//                        // do nothing
+//                        // (later) animation finish event will call 
+//
+//                        state = State.PREPARE_DICE_2_ANI;
+//                        return;
+//                    }
+//                    case State.PREPARE_DICE_2_ANI:
+//                    {
+//                        // random dice 2
+//                        // init animation and play
+//
+//                        state = State.ING_DICE_2_ANI;
+//                        return;
+//                    }
+//                    case State.ING_DICE_2_ANI:
+//                    {
+//                        // do nothing
+//                        // animation finish event will call 
+//						state = State.PREPARE_SKILL_ANI;
+//                        return;
+//                    }
+//                    case State.PREPARE_SKILL_ANI:
+//                    {
+//                        // init skill animation and play
+//
+//                        state = State.ING_SKILL_ANI;
+//                        return;
+//                    }
+//                    case State.ING_SKILL_ANI:
+//                    {
+//                        // do nothing
+//                        // animation finish event will call 
+//						state = State.REMOVE_BUFF;
+//                        return;
+//                    }
+//                    case State.REMOVE_BUFF:
+//                    {
+//                        // remove some buff according to skill
+//
+//                        state = State.ADD_BUFF;
+//                        return;
+//                    }
+//                    case State.ADD_BUFF:
+//                    {
+//                        // add some buff according to skill
+//
+//                        state = State.PREPARE_DAMAGE_ANI;
+//                        return;
+//                    }
+//                    case State.PREPARE_DAMAGE_ANI:
+//                    {
+//                        // init animation with damage and play
+//
+//                        state = State.ING_DAMAGE_ANI;
+//                        return;
+//                    }
+//                    case State.ING_DAMAGE_ANI:
+//                    {
+//                        // do nothing
+//                        // animation finish event will call 
+//                        state = State.JUDGEMENT;
+//                        return;
+//                    }
+//                    case State.JUDGEMENT:
+//                    {
+//                        // judge if some one win
+//
+//                        state = State.BUFF_COUNT;
+//                        return;
+//                    }
+//                    case State.BUFF_COUNT:
+//                    {
+//                        // all turns of buff minus 1 
+//
+//                        state = State.PREPARE_TURN_END_ANI;
+//
+//						// for test
+//						StartCoroutine(DelayToInvoke.DelayToInvokeDo(
+//							()=>{
+//								state = State.ING_TURN_END_ANI;
+//							}, 1.85f));
+//						
+//                        return;
+//                    }
+//                    case State.PREPARE_TURN_END_ANI:
+//                    {
+//                        // prepare turn ending animation and play
+//
+//                        //state = State.ING_TURN_END_ANI;
+//                        return;
+//                    }
+//                    case State.ING_TURN_END_ANI:
+//                    {
+//                        // do nothing
+//                        // animation finish event will call 
+//
+//						// clean all stage
+//						dice1_obj.SetActive(false);
+//						dice2_obj.SetActive (false);
+//						//scroll.selectedSkill = null;
+//                        // new turn with hero
+//                        turnState = Turn.HERO;
+//                        state = State.PREPARE_BUFF_EFFECT_ANI;
+//                        return;
+//                    }
                 }
 				break;
             }

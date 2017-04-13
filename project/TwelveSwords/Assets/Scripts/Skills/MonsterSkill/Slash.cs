@@ -25,10 +25,10 @@ public class Slash : Skill
 		return null;
 	}
 
-	public override SkillEffectResponse apply(Creature from, Creature to, int dice1, int dice2)
+	public override SkillEffectResponse apply(Creature from,  int dice1, int dice2)
 	{
 		SkillEffectResponse response = new SkillEffectResponse();
-		response.proficient = new List<bool>();
+		response.proficient = new List<int>();
 
 
 		return response;

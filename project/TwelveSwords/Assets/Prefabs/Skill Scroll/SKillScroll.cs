@@ -81,7 +81,7 @@ public class SKillScroll : MonoBehaviour {
     {
         skill.skillId = xmlEle.GetAttribute("id");
         skill.name = xmlEle.GetAttribute("name");
-        skill.type =(DamageType) (int.Parse(xmlEle.GetAttribute("type")));
+		skill.type =(SkillType) (int.Parse(xmlEle.GetAttribute("type")));
         skill.level = (SkillLevel)(int.Parse(xmlEle.GetAttribute("level")));
         skill.usable = (SkillUsable)(int.Parse(xmlEle.GetAttribute("usable")));
         skill.cost = int.Parse(xmlEle.GetAttribute("cost"));
@@ -150,6 +150,6 @@ public class SKillScroll : MonoBehaviour {
         }
 
         GameObject.Find("SkillScroll").SetActive(false);
-        controller.AsyncUpdateState();
+		controller.setState (Controller.State.STATE_SKILL_APPLY);
     }
 }

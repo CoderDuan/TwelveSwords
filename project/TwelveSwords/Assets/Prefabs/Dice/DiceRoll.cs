@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class DiceRoll : MonoBehaviour {
 
     public int diceValue;
+	public Controller.State state = Controller.State.STATE_WAIT;
 
     public GameObject num1;
     public GameObject num2;
@@ -33,7 +34,7 @@ public class DiceRoll : MonoBehaviour {
             else if (diceValue == 6) num6.SetActive(true);
             else num1.SetActive(true);
 
-            GameObject.Find("ControllerObj").GetComponent<Controller>().AsyncUpdateState();
+			GameObject.Find("ControllerObj").GetComponent<Controller>().setState(state);
         }, 0.2f));
     }
 }
