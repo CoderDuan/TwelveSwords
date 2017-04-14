@@ -29,7 +29,7 @@ public class Creature
 
     }
 
-	public void takeDamagePrimary(SkillEffectResponse response)
+	public void takeDamagePrimary(SingleEffectResponse response)
 	{
 		// when call takeDamage, it means this is the opponent
 //		int size = response.opponent_hp_change.Count;
@@ -47,7 +47,7 @@ public class Creature
 //		response.opponent_hp [response.opponent_hp.Count - 1] = hp;
 	}
 
-	public virtual CounterEffectResponse takeDamage(SkillEffectResponse response)
+	public virtual SingleEffectResponse takeDamage(SingleEffectResponse response)
     {
 		// when call takeDamage, it means that
 		// 	1. this is the SkillEffectResponse.opponent
@@ -56,7 +56,7 @@ public class Creature
 		return null;
     }
 
-	public virtual void takeCounterEffect(CounterEffectResponse response)
+	public virtual void takeCounterEffect(SingleEffectResponse response)
 	{
 		// when call takeCounterEffect, it means this is the opponent
 //		if (response != null) 

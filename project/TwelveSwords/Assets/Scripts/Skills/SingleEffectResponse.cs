@@ -12,6 +12,11 @@ public class SingleEffectResponse
 	public int opponent_mp_change = 0;
 	public int opponent_mp = 0;
 
+	public List<int> self_buff_on = null;
+	public List<int> self_buff_off = null;
+	public List<int> opponent_buff_on = null;
+	public List<int> opponent_buff_off = null;
+
 	public SingleEffectResponse() { }
 
 	public SingleEffectResponse(SingleEffectResponse a)
@@ -25,5 +30,10 @@ public class SingleEffectResponse
 		opponent_hp = a.opponent_hp;
 		opponent_mp_change = a.opponent_mp_change;
 		opponent_mp = a.opponent_mp;
+
+		self_buff_on = a.self_buff_on;
+		self_buff_off = a.self_buff_off;
+		opponent_buff_on = a.opponent_buff_on;
+		opponent_buff_off = a.opponent_buff_off;
 	}
 }

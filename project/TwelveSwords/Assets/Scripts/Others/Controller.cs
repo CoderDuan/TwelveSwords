@@ -125,28 +125,6 @@ public class Controller : MonoBehaviour {
 		state = s;
 	}
 
-//    public void AsyncUpdateState()
-//    {
-//        switch(state)
-//        {
-//            case State.ING_DICE_1_ANI:
-//            {
-//                state = State.SELECT_SKILL;
-//                return;
-//            }
-//            case State.ING_DICE_2_ANI:
-//            {
-//                state = State.PREPARE_SKILL_ANI;
-//                return;
-//            }
-//            case State.SELECT_SKILL:
-//            {
-//                state = State.ING_SELECT_SKILL_ANI;
-//                return;
-//            }
-//        }
-//    }
-
     public void NewBattle(Monster new_monster)
     {
         monster = new_monster;
@@ -192,45 +170,45 @@ public class Controller : MonoBehaviour {
 		text = null;
 	}
 
-	public void delayCreateFloatingText (bool is_left, string contents, Color color, float seconds)
-	{
-		StartCoroutine(DelayToInvoke.DelayToInvokeDo(
-			()=>{
-				GameObject ft = is_left ? Instantiate (left_prefab, canvas.transform) : Instantiate (right_prefab, canvas.transform);
-				Text txt = ((Text)ft.GetComponent<Text>());
-				txt.text = contents;
-				txt.color = color;
-			}, seconds));
-	}
+//	public void delayCreateFloatingText (bool is_left, string contents, Color color, float seconds)
+//	{
+//		StartCoroutine(DelayToInvoke.DelayToInvokeDo(
+//			()=>{
+//				GameObject ft = is_left ? Instantiate (left_prefab, canvas.transform) : Instantiate (right_prefab, canvas.transform);
+//				Text txt = ((Text)ft.GetComponent<Text>());
+//				txt.text = contents;
+//				txt.color = color;
+//			}, seconds));
+//	}
 
-	public void delayCreateBlinkAttack (Color color, Vector2 pos, float rotation, float seconds)
-	{
-		StartCoroutine(DelayToInvoke.DelayToInvokeDo(
-			()=>{
-				GameObject ba = Instantiate (blink_attack, canvas.transform);
-				RectTransform trans = ba.GetComponent<RectTransform>();
-				trans.anchoredPosition = pos;
-				trans.Rotate(0.0f, 0.0f, rotation);
-				Image im = ba.GetComponent<Image>();
-				im.color = color;
-			}, seconds));
-	}
+//	public void delayCreateBlinkAttack (Color color, Vector2 pos, float rotation, float seconds)
+//	{
+//		StartCoroutine(DelayToInvoke.DelayToInvokeDo(
+//			()=>{
+//				GameObject ba = Instantiate (blink_attack, canvas.transform);
+//				RectTransform trans = ba.GetComponent<RectTransform>();
+//				trans.anchoredPosition = pos;
+//				trans.Rotate(0.0f, 0.0f, rotation);
+//				Image im = ba.GetComponent<Image>();
+//				im.color = color;
+//			}, seconds));
+//	}
 
-	public void delayCreateBlinkAttack (Color color, bool left, float seconds)
-	{
-		float x = left ? -475.0f : 475.0f;
-		Vector2 pos = new Vector2 (x, 160.0f + Random.Range (-10, 11));
-		float rotation = Random.Range (-7.0f, 7.0f);
-		StartCoroutine(DelayToInvoke.DelayToInvokeDo(
-			()=>{
-				GameObject ba = Instantiate (blink_attack, canvas.transform);
-				RectTransform trans = ba.GetComponent<RectTransform>();
-				trans.anchoredPosition = pos;
-				trans.Rotate(0.0f, 0.0f, rotation);
-				Image im = ba.GetComponent<Image>();
-				im.color = color;
-			}, seconds));
-	}
+//	public void delayCreateBlinkAttack (Color color, bool left, float seconds)
+//	{
+//		float x = left ? -475.0f : 475.0f;
+//		Vector2 pos = new Vector2 (x, 160.0f + Random.Range (-10, 11));
+//		float rotation = Random.Range (-7.0f, 7.0f);
+//		StartCoroutine(DelayToInvoke.DelayToInvokeDo(
+//			()=>{
+//				GameObject ba = Instantiate (blink_attack, canvas.transform);
+//				RectTransform trans = ba.GetComponent<RectTransform>();
+//				trans.anchoredPosition = pos;
+//				trans.Rotate(0.0f, 0.0f, rotation);
+//				Image im = ba.GetComponent<Image>();
+//				im.color = color;
+//			}, seconds));
+//	}
 
 	public void delayHPMPDecrease (RectTransform rect, Text text, int hp, int maxhp, float seconds)
 	{
@@ -321,23 +299,21 @@ public class Controller : MonoBehaviour {
 	// When recieve a SingleEffectResponse
 	public void recieveEffectResponse(int stage)
 	{
-		Creature self, opponent;
-		if (turnState == Turn.HERO) 
-		{
-			self = hero;
-			opponent = monster;
-		}
-		else
-		{
-			self = monster;
-			opponent = hero;
-		}
+		recieveSingleEffect (stage);
 
 		if (stage == response.effects.Count - 1)
 			state = State.STATE_JUDGEMENT;
+	}
 
-		self = null;
-		opponent = null;
+	public void recieveSingleEffect(int stage)
+	{
+		if (turnState == Turn.HERO) 
+		{
+			
+		} 
+		else 
+		{
+		}
 	}
 
 	// Use this for initialization
@@ -485,7 +461,6 @@ public class Controller : MonoBehaviour {
 					case State.STATE_JUDGEMENT:
                     {
 						Debug.Log ("JUDGEMENT");
-
 						state = State.STATE_WAIT;
                         return;
                     }
