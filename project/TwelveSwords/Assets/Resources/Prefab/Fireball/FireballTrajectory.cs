@@ -12,7 +12,7 @@ public class FireballTrajectory : MonoBehaviour {
 	public Vector2 start = new Vector2(-467.5f, 70);
 	public Vector2 destination = new Vector2(467.5f, 45);
 	private Vector2 velocity;
-	public float rotate = 24.0f;
+	public float rotate = 8.0f;
 
 	public float alpha = 1.0f;
 	public float delay = 0.0f;
@@ -20,10 +20,14 @@ public class FireballTrajectory : MonoBehaviour {
 	public float expand = 0.5f;
 	private float expanding;
 
+	private bool visible = false;
+
 	void disturb()
 	{
+		int seed = (int)(long.Parse(System.DateTime.Now.ToString ("yyyyMMddHHmmssfff")) % int.MaxValue);
+		Random.InitState (seed);	
 		destination.x += Random.Range (-15.0f, 15.0f);
-		destination.y += Random.Range (-15.0f, 15.0f);
+		destination.y += Random.Range (-50.0f, 50.0f);
 	}
 
 	// Use this for initialization
@@ -37,6 +41,8 @@ public class FireballTrajectory : MonoBehaviour {
 		pos.x = start.x;
 		pos.y = start.y;	
 		obj.GetComponent<RectTransform>().anchoredPosition = pos;
+
+		img.enabled = visible;
 	}
 	
 	// Update is called once per frame
@@ -46,6 +52,10 @@ public class FireballTrajectory : MonoBehaviour {
 			delay -= dt;
 		else 
 		{
+			if (!visible) {
+				visible = true;
+				img.enabled = visible;
+			}
 			obj.GetComponent<RectTransform> ().Rotate (0.0f, 0.0f, rotate);
 			if (duration > 0) 
 			{

@@ -302,14 +302,17 @@ public class Controller : MonoBehaviour {
 		float delay = 0.0f;
 		for (int i = 0; i < response.effects.Count; i++) 
 		{
-			StartCoroutine(DelayToInvoke.DelayToInvokeDo(
-				()=>{
-					GameObject effect_prefab = Resources.Load<GameObject> (scroll.selectedSkill.prefabPath);
-					GameObject traj = Instantiate (effect_prefab,canvas.transform);
-					traj.GetComponent<Identity>().stage = i;
-					traj = null;
-					effect_prefab = null;
-				}, delay));
+			
+			GameObject effect_prefab = Resources.Load<GameObject> (scroll.selectedSkill.prefabPath);
+			GameObject traj = Instantiate (effect_prefab,canvas.transform);
+			traj.GetComponent<Identity>().stage = i;
+			traj.GetComponent<FireballTrajectory> ().delay = delay;
+			traj = null;
+			effect_prefab = null;
+			if (i == response.effects.Count-1)
+			{
+				Destroy(GameObject.Find("__PREPARE__"));
+			}
 			delay += 0.2f;
 		}
 		return delay;
@@ -408,8 +411,15 @@ public class Controller : MonoBehaviour {
                         // do nothing
                         // (later) animation finish event will call 
 						//delayCreateFloatingText(true, scroll.selectedSkill.name, MyColor.SkillColor, 0.1f);
-						createScrollingText (new Vector2 (-467.5f, 0.0f), scroll.selectedSkill.name, MyColor.SkillColor
-							, 0.1f, 0.6f, this, State.STATE_DICE_2);
+						createScrollingText (new Vector2 (-467.5f, 170.0f), scroll.selectedSkill.name, MyColor.SkillColor
+							, 0.1f, 0.8f, this, State.STATE_DICE_2);
+
+						GameObject prefab = Resources.Load<GameObject> (scroll.selectedSkill.preparePath);
+
+						GameObject obj = Instantiate(prefab, canvas.transform);
+						obj.name = "__PREPARE__";
+						prefab = null;
+						obj = null;
 
                         state = State.STATE_WAIT;
                         return;
@@ -419,7 +429,7 @@ public class Controller : MonoBehaviour {
                         // random dice 2
                         // init animation and play
                         // random a value
-                        dice2 = Random.Range(1, 7);
+						dice2 = Random.Range(1, 7);
                         // reset position
 						dice2_obj.GetComponent<RectTransform>().anchoredPosition = dice2_pos + new Vector2(Random.Range(-30, 31), Random.Range(-30, 31));
                         // set active
