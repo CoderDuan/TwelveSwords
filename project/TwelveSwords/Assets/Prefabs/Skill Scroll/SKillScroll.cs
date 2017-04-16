@@ -29,6 +29,8 @@ public class SKillScroll : MonoBehaviour {
     public Text skillProficient1Prob;
     public Text skillProficient2Prob;
     public Text skillProficient3Prob;
+	// Apply button
+	public Button applyBtn;
 
     public Controller controller;
 
@@ -151,5 +153,6 @@ public class SKillScroll : MonoBehaviour {
 
         GameObject.Find("SkillScroll").SetActive(false);
 		controller.setState (Controller.State.STATE_SKILL_APPLY);
+		applyBtn.enabled = false;
     }
 }

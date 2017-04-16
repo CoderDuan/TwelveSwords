@@ -27,7 +27,7 @@ public class SkullWarrior : Monster
 
 	public override SingleEffectResponse takeDamage(SingleEffectResponse response)
 	{
-//		takeDamagePrimary (response);
+		takeDamagePrimary (response);
 //		if (response.type == SkillType.PHYSICAL) {
 //			// when it takes counter, it means this is 'self'
 //			CounterEffectResponse counter = new CounterEffectResponse ();

@@ -32,19 +32,24 @@ public class Creature
 	public void takeDamagePrimary(SingleEffectResponse response)
 	{
 		// when call takeDamage, it means this is the opponent
-//		int size = response.opponent_hp_change.Count;
-//		int damageCount = 0;
-//		response.opponent_hp = new List<int> ();
-//		for (int i=0;i<size;i++)
-//		{
-//			response.opponent_hp_change[i] = (int)(response.opponent_hp_change[i] * damage_reduction);
-//			damageCount += response.opponent_hp_change[i];
-//			response.opponent_hp.Add (hp + damageCount);
-//		}
-//		int newhp = hp + damageCount;
-//		newhp = newhp < 0 ? 0 : newhp;
-//		hp = newhp;
-//		response.opponent_hp [response.opponent_hp.Count - 1] = hp;
+		if (response.opponent_hp_change < 0) {
+			response.opponent_hp_change = (int)(response.opponent_hp_change * damage_reduction);
+			int newhp = hp + response.opponent_hp_change;
+			newhp = newhp < 0 ? 0 : newhp;
+			hp = newhp;
+		} 
+		else if (response.opponent_hp_change > 0) 
+		{
+			int newhp = hp + response.opponent_hp_change;
+			newhp = newhp > maxHp ? maxHp : newhp;
+		}
+
+		if (response.opponent_mp_change != 0) {
+			int newmp = mp + response.opponent_mp_change;
+			newmp = newmp < 0 ? 0 : newmp;
+			newmp = newmp > maxMp ? maxMp : newmp;
+			mp = newmp;
+		} 
 	}
 
 	public virtual SingleEffectResponse takeDamage(SingleEffectResponse response)

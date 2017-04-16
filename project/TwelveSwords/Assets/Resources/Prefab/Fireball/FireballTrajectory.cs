@@ -21,6 +21,7 @@ public class FireballTrajectory : MonoBehaviour {
 	private float expanding;
 
 	private bool visible = false;
+	private bool hit = false;
 
 	void disturb()
 	{
@@ -67,6 +68,13 @@ public class FireballTrajectory : MonoBehaviour {
 				obj.GetComponent<RectTransform>().anchoredPosition = pos;
 			} else 
 			{
+				// hit
+				if (!hit) 
+				{
+					if (controller) 
+						controller.recieveEffectResponse (obj.GetComponent<Identity>().stage);
+					hit = true;
+				}
 				// expand
 				if (alpha > 0) 
 				{
@@ -83,8 +91,6 @@ public class FireballTrajectory : MonoBehaviour {
 				} 
 				else 
 				{
-					if (controller) 
-						controller.recieveEffectResponse (obj.GetComponent<Identity>().stage);
 					controller = null;
 					Destroy (obj);
 					obj = null;

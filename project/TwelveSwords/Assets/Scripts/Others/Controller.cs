@@ -117,7 +117,8 @@ public class Controller : MonoBehaviour {
 		//STATE_EFFECT,
 		//STATE_COUNTER,
 		//STATE_COUNTER_EFFECT
-		STATE_JUDGEMENT
+		STATE_JUDGEMENT,
+		STATE_WAIT_TURN_FINISH
     }
 
 	public void setState(State s)
@@ -152,13 +153,18 @@ public class Controller : MonoBehaviour {
     }
 
 	// scrolling text
-	public void createScrollingText(Vector2 pos, string contents, Color color, float delay, float duration, Controller c, State s)
+	private void createScrollingText(Vector2 pos, string contents, Color color, float delay, float duration, Controller c, State s, int size = 30, bool bold = true)
 	{
 		GameObject scrollingTextObj = Instantiate (scrolling_text, canvas.transform);
 		scrollingTextObj.GetComponent<RectTransform> ().anchoredPosition = pos;
 		Text text = scrollingTextObj.GetComponent<Text> ();
 		text.text = contents;
 		text.color = color;
+		text.fontSize = size;
+		if (bold)
+			text.fontStyle = FontStyle.Bold;
+		else
+			text.fontStyle = FontStyle.Normal;
 		ScrollingText scrollingText = scrollingTextObj.GetComponent<ScrollingText> ();
 		scrollingText.delay = delay;
 		scrollingText.setDuration (duration);
@@ -210,20 +216,20 @@ public class Controller : MonoBehaviour {
 //			}, seconds));
 //	}
 
-	public void delayHPMPDecrease (RectTransform rect, Text text, int hp, int maxhp, float seconds)
-	{
-		StartCoroutine(DelayToInvoke.DelayToInvokeDo(
-			()=>{
-				rect.sizeDelta = new Vector2(((float)hp) / ((float)maxhp) * 233.0f, 18.0f);
-				text.text = hp.ToString();
-			}, seconds));
-	}
+//	private void delayHPMPDecrease (RectTransform rect, Text text, int hp, int maxhp, float seconds)
+//	{
+//		StartCoroutine(DelayToInvoke.DelayToInvokeDo(
+//			()=>{
+//				rect.sizeDelta = new Vector2(((float)hp) / ((float)maxhp) * 233.0f, 18.0f);
+//				text.text = hp.ToString();
+//			}, seconds));
+//	}
 
 	// Animation Display Functions
 
 	// 显示精通弹出文本，is_left表示是否显示在左边，也就是英雄位置
 	// 返回总共delay的时间
-	public float displayProficientTexts(bool is_left)
+	private float displayProficientTexts(bool is_left)
 	{
 		if (response.proficient != null && response.proficient.Count != 0) {
 			float x = is_left ? -467.5f : 467.5f;
@@ -248,34 +254,68 @@ public class Controller : MonoBehaviour {
 		return 0.0f;
 	}
 
-	public float displaySkillEffect(bool is_left)
+	private float displaySingleEffect(bool left_is_self, int stage)
 	{
-		if (response.proficient != null) 
-		{
-			float x = is_left ? -467.5f : 467.5f;
-			float delay = 0.0f;
-			Vector2 pos = new Vector2 (x, 0);
-			int size = response.proficient.Count - 1;
-			int idx;
-			for (int i = 0; i < size; i++) 
-			{
-				idx = response.proficient [i];
-				createScrollingText (pos, scroll.selectedSkill.proficientName [idx], MyColor.ProficientColor [idx],
-					delay, 2.4f, null, state);
-				delay += 0.4f;
-			}
-			idx = response.proficient [size];
-			// dont forget state
-			createScrollingText (pos, scroll.selectedSkill.proficientName [idx], MyColor.ProficientColor [idx],
-				delay, 2.4f, this, State.STATE_SKILL_ANI);
-			delay += 0.4f;
+		if (stage < 0 || stage >= response.effects.Count)
+			return 0.0f;
+		
+		float sx = left_is_self ? -467.5f : 467.5f;
+		float ox = -sx;
 
-			return delay;
+		float sdelay = 0.0f;
+		int tmp = response.effects [stage].self_hp_change;
+		if (tmp != 0) 
+		{
+			if (tmp > 0)
+				createScrollingText (new Vector2 (sx, 0), "+" + tmp.ToString (), MyColor.HpRecover, sdelay, 2.4f, null, state);
+			else
+				createScrollingText (new Vector2 (sx, 0), tmp.ToString (), MyColor.HpColor, sdelay, 2.4f, null, state);
+			sdelay += 0.1f;
 		}
-		return 0.0f;
+
+		tmp = response.effects [stage].self_mp_change;
+		if (tmp > 0) 
+		{
+			createScrollingText (new Vector2 (sx, 0), "+" + tmp.ToString (), MyColor.MpColor, sdelay, 2.4f, null, state);
+			sdelay += 0.1f;
+		}
+
+		float odelay = 0.0f;
+		tmp = response.effects [stage].opponent_hp_change;
+		if (tmp != 0) 
+		{
+			if (tmp > 0)
+				createScrollingText (new Vector2 (ox, 0), "+" + tmp.ToString (), MyColor.HpRecover, odelay, 2.4f, null, state);
+			else
+				createScrollingText (new Vector2 (ox, 0), tmp.ToString (), MyColor.HpColor, odelay, 2.4f, null, state);
+			odelay += 0.1f;
+		}
+
+		tmp = response.effects [stage].opponent_mp_change;
+		if (tmp < 0) 
+		{
+			createScrollingText (new Vector2 (ox, 0), tmp.ToString (), MyColor.MpColor, odelay, 2.4f, null, state);
+			odelay += 0.1f;
+		}
+			
+		return (sdelay > odelay ? sdelay : odelay);
 	}
 
-	public float generateSkillEffect()
+	private void updateCreatureState()
+	{
+		// hp and mp
+		hero_hp_bar.sizeDelta = new Vector2(((float)hero.hp) / ((float)hero.maxHp) * 233.0f, 18.0f);
+		hero_hp.text = hero.hp.ToString ();
+		hero_mp_bar.sizeDelta = new Vector2(((float)hero.mp) / ((float)hero.maxMp) * 233.0f, 18.0f);
+		hero_mp.text = hero.mp.ToString ();
+
+		monster_bar.sizeDelta = new Vector2(((float)monster.hp) / ((float)monster.maxHp) * 233.0f, 18.0f);
+		monster_hp.text = monster.hp.ToString ();
+
+		// buff change follows
+	}
+
+	private float generateSkillEffect()
 	{
 		float delay = 0.0f;
 		for (int i = 0; i < response.effects.Count; i++) 
@@ -305,11 +345,14 @@ public class Controller : MonoBehaviour {
 			state = State.STATE_JUDGEMENT;
 	}
 
-	public void recieveSingleEffect(int stage)
+	private void recieveSingleEffect(int stage)
 	{
 		if (turnState == Turn.HERO) 
 		{
-			
+			// display effect and damage
+			SingleEffectResponse counter = monster.takeDamage (response.effects[stage]);
+			displaySingleEffect(true, stage);
+			updateCreatureState ();
 		} 
 		else 
 		{
@@ -358,6 +401,7 @@ public class Controller : MonoBehaviour {
                         // init animation and play
 						// random a value
 						dice1 = Random.Range(1, 7);
+						//dice1 = 1;
                         // reset position
                         dice1_obj.GetComponent<RectTransform>().anchoredPosition = dice1_pos + new Vector2(Random.Range(-30, 31), Random.Range(-30, 31));
                         // set active
@@ -376,19 +420,16 @@ public class Controller : MonoBehaviour {
                     }
 					case State.STATE_SKILL:
                     {
-                        // do nothing
                         // player select skill in gui
+						scroll.applyBtn.enabled = true;
 
 						state = State.STATE_WAIT;
                         return;
                     }
 					case State.STATE_SKILL_APPLY:
                     {
-                        // do nothing
-                        // (later) animation finish event will call 
-						//delayCreateFloatingText(true, scroll.selectedSkill.name, MyColor.SkillColor, 0.1f);
 						createScrollingText (new Vector2 (-467.5f, 170.0f), scroll.selectedSkill.name, MyColor.SkillColor
-							, 0.1f, 0.8f, this, State.STATE_DICE_2);
+							, 0.1f, 1.2f, this, State.STATE_DICE_2);
 
 						GameObject prefab = Resources.Load<GameObject> (scroll.selectedSkill.preparePath);
 
@@ -406,6 +447,7 @@ public class Controller : MonoBehaviour {
                         // init animation and play
                         // random a value
 						dice2 = Random.Range(1, 7);
+						//dice2 = 6;
                         // reset position
 						dice2_obj.GetComponent<RectTransform>().anchoredPosition = dice2_pos + new Vector2(Random.Range(-30, 31), Random.Range(-30, 31));
                         // set active
@@ -460,10 +502,21 @@ public class Controller : MonoBehaviour {
                     }
 					case State.STATE_JUDGEMENT:
                     {
-						Debug.Log ("JUDGEMENT");
-						state = State.STATE_WAIT;
+						//Debug.Log ("JUDGEMENT");
+						state = State.STATE_WAIT_TURN_FINISH;
                         return;
                     }
+					case State.STATE_WAIT_TURN_FINISH:
+					{
+						Debug.Log (canvas.transform.childCount);
+						if (canvas.transform.childCount == 0) 
+						{
+							dice1_obj.SetActive(false);
+							dice2_obj.SetActive (false);
+							state = State.STATE_DICE_1;
+						}
+						return;
+					}
 //                    case State.ADD_BUFF:
 //                    {
 //                        // add some buff according to skilleffectresponse
