@@ -15,7 +15,7 @@ public class Fireball : Skill
 		prefabPath = "Prefab/Fireball/fireball_prefab";
 		preparePath = "Prefab/Fireball/fireball_prepare";
         name = "火球术";
-		type = SkillType.MAGICAL;
+		type = SkillType.PHYSICAL;
         level = SkillLevel.PRIMARY;
         usable = SkillUsable.UNIVERSAL;
         cost = 1;
@@ -49,13 +49,16 @@ public class Fireball : Skill
     {
 		// Calculate damage, and apply buffs
         SkillEffectResponse response = new SkillEffectResponse();
-		response.type = type;
-		response.color = MyColor.FireballColor;
+		//response.type = type;
+		//response.color = MyColor.FireballColor;
 		response.proficient = new List<int>();
 
 		// change: + means recovery, - means damage/cost
 		response.effects = new List<SingleEffectResponse>();
 		response.effects.Add (new SingleEffectResponse ());
+		response.effects [0].stage = 0;
+		response.effects [0].total = 1;
+		response.effects [0].type = type;
 		//response.opponent_hp_change = new List<int>();
 		//response.self_mp_change = new List<int>();
 
@@ -81,6 +84,7 @@ public class Fireball : Skill
 
         if (dice2 > dice1 * 3)
 		{
+			response.effects [0].total++;
 			response.effects.Add (new SingleEffectResponse (response.effects[0]));
             response.proficient.Add(2);
         }

@@ -4,7 +4,8 @@ public enum SkillType
 {
     PHYSICAL = 0,
     MAGICAL,
-	RECOVERY
+	RECOVERY,
+	MULTIPLE
 };
 
 public enum SkillLevel : int

@@ -4,7 +4,7 @@
 // 在 skill.apply, creature.takeDamagePrimary 和 creature.takeDamge 中修改
 
 using System.Collections.Generic;
-using UnityEngine;
+//using UnityEngine;
 
 // 技能应用后的返回结构体
 // 指导UI该怎么画
@@ -31,8 +31,8 @@ public class SkillEffectResponse  {
 //	// 反击和反伤的血量都记录在这里
 //	public List<int> counterhp = null; // 记录受到每段反击后，剩余的血量
 
-	public SkillType type = SkillType.MAGICAL; // 记录技能类型，在UI上决定画什么
-	public Color color = Color.white;	// 决定涂什么颜色
+	//public SkillType type = SkillType.MAGICAL; // 记录技能类型，在UI上决定画什么
+	//public Color color = Color.white;	// 决定涂什么颜色
 	public List<int> proficient = null; // 记录触发了哪些精通（精通的index）
 	public List<SingleEffectResponse> effects = null;
 

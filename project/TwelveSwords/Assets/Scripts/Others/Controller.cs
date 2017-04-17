@@ -227,6 +227,14 @@ public class Controller : MonoBehaviour {
 
 	// Animation Display Functions
 
+	private float dispalySkillTexts(bool is_left, string skillname, float delay, float duration, Controller c)
+	{
+		float x = is_left ? -467.5f : 467.5f;
+		createScrollingText (new Vector2 (x, 170.0f), skillname, MyColor.SkillColor
+			, delay, duration, c, State.STATE_DICE_2);
+		return delay;
+	}
+
 	// 显示精通弹出文本，is_left表示是否显示在左边，也就是英雄位置
 	// 返回总共delay的时间
 	private float displayProficientTexts(bool is_left)
@@ -301,6 +309,53 @@ public class Controller : MonoBehaviour {
 		return (sdelay > odelay ? sdelay : odelay);
 	}
 
+	private float displayCounterEffect(bool left_is_self, CounterEffectResponse response)
+	{
+		if (response == null)
+			return 0.0f;;
+
+		float sx = left_is_self ? -467.5f : 467.5f;
+		float ox = -sx;
+
+		float sdelay = 0.0f;
+		int tmp = response.self_hp_change;
+		if (tmp != 0) 
+		{
+			if (tmp > 0)
+				createScrollingText (new Vector2 (sx, 0), "+" + tmp.ToString (), MyColor.HpRecover, sdelay, 2.4f, null, state);
+			else
+				createScrollingText (new Vector2 (sx, 0), tmp.ToString (), MyColor.HpColor, sdelay, 2.4f, null, state);
+			sdelay += 0.1f;
+		}
+
+		tmp = response.self_mp_change;
+		if (tmp > 0) 
+		{
+			createScrollingText (new Vector2 (sx, 0), "+" + tmp.ToString (), MyColor.MpColor, sdelay, 2.4f, null, state);
+			sdelay += 0.1f;
+		}
+
+		float odelay = 0.0f;
+		tmp = response.opponent_hp_change;
+		if (tmp != 0) 
+		{
+			if (tmp > 0)
+				createScrollingText (new Vector2 (ox, 0), "+" + tmp.ToString (), MyColor.HpRecover, odelay, 2.4f, null, state);
+			else
+				createScrollingText (new Vector2 (ox, 0), tmp.ToString (), MyColor.HpColor, odelay, 2.4f, null, state);
+			odelay += 0.1f;
+		}
+
+		tmp = response.opponent_mp_change;
+		if (tmp < 0) 
+		{
+			createScrollingText (new Vector2 (ox, 0), tmp.ToString (), MyColor.MpColor, odelay, 2.4f, null, state);
+			odelay += 0.1f;
+		}
+
+		return (sdelay > odelay ? sdelay : odelay);
+	}
+
 	private void updateCreatureState()
 	{
 		// hp and mp
@@ -350,9 +405,17 @@ public class Controller : MonoBehaviour {
 		if (turnState == Turn.HERO) 
 		{
 			// display effect and damage
-			SingleEffectResponse counter = monster.takeDamage (response.effects[stage]);
+			CounterEffectResponse counter = monster.takeDamage (response.effects[stage]);
 			displaySingleEffect(true, stage);
 			updateCreatureState ();
+			if (counter != null) 
+			{
+				dispalySkillTexts (false, counter.name, 0.0f, 1.2f, null);
+				hero.takeCounterEffect (counter);
+				displayCounterEffect (false, counter);
+				updateCreatureState ();
+			}
+			counter = null;
 		} 
 		else 
 		{
@@ -370,7 +433,6 @@ public class Controller : MonoBehaviour {
 
         turnState = Turn.HERO;
 		state = State.STATE_DICE_1;//State.STATE_WAIT;
-		//Debug.Log();
 		int seed = (int)(long.Parse(System.DateTime.Now.ToString ("yyyyMMddHHmmssfff")) % int.MaxValue);
 		Random.InitState (seed);	
 
@@ -428,8 +490,9 @@ public class Controller : MonoBehaviour {
                     }
 					case State.STATE_SKILL_APPLY:
                     {
-						createScrollingText (new Vector2 (-467.5f, 170.0f), scroll.selectedSkill.name, MyColor.SkillColor
-							, 0.1f, 1.2f, this, State.STATE_DICE_2);
+						//createScrollingText (new Vector2 (-467.5f, 170.0f), scroll.selectedSkill.name, MyColor.SkillColor
+						//	, 0.1f, 1.2f, this, State.STATE_DICE_2);
+						dispalySkillTexts(true, scroll.selectedSkill.name, 0.1f, 1.2f, this);
 
 						GameObject prefab = Resources.Load<GameObject> (scroll.selectedSkill.preparePath);
 
@@ -502,13 +565,11 @@ public class Controller : MonoBehaviour {
                     }
 					case State.STATE_JUDGEMENT:
                     {
-						//Debug.Log ("JUDGEMENT");
 						state = State.STATE_WAIT_TURN_FINISH;
                         return;
                     }
 					case State.STATE_WAIT_TURN_FINISH:
 					{
-						Debug.Log (canvas.transform.childCount);
 						if (canvas.transform.childCount == 0) 
 						{
 							dice1_obj.SetActive(false);

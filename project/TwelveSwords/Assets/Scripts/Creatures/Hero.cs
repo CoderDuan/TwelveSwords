@@ -35,7 +35,7 @@ public class Hero : Creature
         mag = 1;
     }
 
-	public override SingleEffectResponse takeDamage (SingleEffectResponse response)
+	public override CounterEffectResponse takeDamage (SingleEffectResponse response)
 	{
 		takeDamagePrimary (response);
 		return null;

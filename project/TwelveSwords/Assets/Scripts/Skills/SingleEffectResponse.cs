@@ -12,6 +12,11 @@ public class SingleEffectResponse
 	public int opponent_mp_change = 0;
 	//public int opponent_mp = 0;
 
+	public int stage = 0;
+	public int total = 0;
+
+	public SkillType type;
+
 	public List<int> self_buff_on = null;
 	public List<int> self_buff_off = null;
 	public List<int> opponent_buff_on = null;
@@ -21,6 +26,7 @@ public class SingleEffectResponse
 
 	public SingleEffectResponse(SingleEffectResponse a)
 	{
+		type = a.type;
 		self_hp_change = a.self_hp_change;
 		//self_hp = a.self_hp;
 		self_mp_change = a.self_mp_change;
@@ -35,5 +41,7 @@ public class SingleEffectResponse
 		self_buff_off = a.self_buff_off;
 		opponent_buff_on = a.opponent_buff_on;
 		opponent_buff_off = a.opponent_buff_off;
+		total = a.total;
+		stage = a.stage + 1;
 	}
 }

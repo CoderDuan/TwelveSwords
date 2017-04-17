@@ -25,18 +25,20 @@ public class SkullWarrior : Monster
         turn++;
     }
 
-	public override SingleEffectResponse takeDamage(SingleEffectResponse response)
+	public override CounterEffectResponse takeDamage(SingleEffectResponse response)
 	{
 		takeDamagePrimary (response);
-//		if (response.type == SkillType.PHYSICAL) {
-//			// when it takes counter, it means this is 'self'
-//			CounterEffectResponse counter = new CounterEffectResponse ();
-//			counter.opponent_hp_change = new List<int> ();
-//			counter.opponent_hp_change.Add (atk);
-//			return counter;
-//		} else {
-//			return null;
-//		}
+		if (response.type == SkillType.PHYSICAL && response.stage == response.total - 1) {
+			// when it takes counter, it means this is 'self'
+			//CounterEffectResponse counter = new CounterEffectResponse ();
+			//counter.opponent_hp_change = new List<int> ();
+			//counter.opponent_hp_change.Add (atk);
+			CounterEffectResponse counter = new CounterEffectResponse();
+			counter.opponent_hp_change = -atk;
+			return counter;
+		} else {
+			return null;
+		}
 		return null;
 	}
 
