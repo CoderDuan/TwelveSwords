@@ -11,7 +11,7 @@ public class SkullWarrior : Monster
     public override void init()
     {
         name = "骷髅战士";
-        monsterId = "monster_skullwarrior";
+        monsterId = "skull_warrior";
         description = "由亡灵之力控制的骷髅战士";
         hp = 50;
         maxHp = 50;

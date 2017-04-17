@@ -15,7 +15,7 @@ public class SKillScroll : MonoBehaviour {
 
     public Hero hero;
 
-    private ArrayList skillList;
+	private List<Skill> skillList;
 
     // Display Texts
     public Text skillName;
@@ -43,7 +43,7 @@ public class SKillScroll : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		selectedSkill = null;
-        skillList = new ArrayList();
+		skillList = new List<Skill>();
         init();
         cleanAllText();
         hero = controller.hero;
@@ -69,12 +69,11 @@ public class SKillScroll : MonoBehaviour {
         int size = skillList.Count;
         for (int i=0;i<size;i++)
         {
-            GameObject cell = Instantiate(cellPrefab);
+			GameObject cell = Instantiate(cellPrefab, panel.transform);
             cell.name = "cell" + i.ToString(); 
             int idx = i;
             ((Button)(cell.transform.Find("Icon").gameObject.GetComponent<Button>())).onClick.AddListener(() => setSelectedSkill(idx));
-            ((Image)(cell.transform.Find("Icon").gameObject.GetComponent<Image>())).sprite = Resources.Load<Sprite>(((Skill)skillList[i]).skillId);
-			cell.transform.SetParent(panel.transform);
+			((Image)(cell.transform.Find("Icon").gameObject.GetComponent<Image>())).sprite = Resources.Load<Sprite>(Global.PREFAB_SKILL_FIGURE_PATH + ((Skill)skillList[i]).skillId);
             cell.transform.Find("Locked").gameObject.SetActive(((Skill)skillList[i]).isLocked);
         }
     }

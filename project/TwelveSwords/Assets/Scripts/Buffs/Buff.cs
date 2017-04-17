@@ -1,14 +1,22 @@
 ﻿public enum BuffType : int
 {
-    DAMAGE_INCREMENT = 0,
-    DAMAGE_REDUCTION,
-    BLEEDING,
-    HEALING
+	APPLY_DAMAGE = 0,
+	APPLY_MAGICAL,
+	APPLY_PHYSICAL,
+	TAKE_DAMAGE,
+	TAKE_MAGICAL,
+	TAKE_PHYSICAL,
+	CHANGE_HP,
+	CHANGE_MP,
+//    DAMAGE_INCREMENT = 0,
+//    DAMAGE_REDUCTION,
+//    BLEEDING,
+//    HEALING
 }
 
-public class Buff
+public abstract class Buff
 {
-    public bool accumulateable;
+    public bool unique;
     public BuffType type;
     public int turn;
     public int extraValue; 
@@ -24,5 +32,5 @@ public class Buff
 
     public Buff() { }
 
-    public void effect(Creature creature) { }
+	public abstract void takeEffect (Creature target);
 }

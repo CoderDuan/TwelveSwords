@@ -6714,6 +6714,7 @@ GameObject:
   - component: {fileID: 1728020835}
   - component: {fileID: 1728020834}
   - component: {fileID: 1728020833}
+  - component: {fileID: 1728020836}
   m_Layer: 5
   m_Name: Buffs
   m_TagString: Untagged
@@ -6795,6 +6796,19 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1728020831}
+--- !u!114 &1728020836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1728020831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36ed14097f296f44d8fb1a9619d7ac62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  list: {fileID: 1728020831}
+  cellPrefab: {fileID: 1028015468819424, guid: 711478d0613823647a96411924f800eb, type: 2}
 --- !u!1 &1771415470
 GameObject:
   m_ObjectHideFlags: 0
@@ -6920,6 +6934,7 @@ GameObject:
   - component: {fileID: 1819417228}
   - component: {fileID: 1819417227}
   - component: {fileID: 1819417229}
+  - component: {fileID: 1819417230}
   m_Layer: 5
   m_Name: Buffs
   m_TagString: Untagged
@@ -7001,6 +7016,19 @@ MonoBehaviour:
   m_Spacing: {x: 5, y: 5}
   m_Constraint: 1
   m_ConstraintCount: 5
+--- !u!114 &1819417230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1819417225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36ed14097f296f44d8fb1a9619d7ac62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  list: {fileID: 1819417225}
+  cellPrefab: {fileID: 1028015468819424, guid: 711478d0613823647a96411924f800eb, type: 2}
 --- !u!1 &1859453439
 GameObject:
   m_ObjectHideFlags: 0
@@ -7192,12 +7220,14 @@ MonoBehaviour:
   hero_mp_bar: {fileID: 294997648}
   hero_atk: {fileID: 893517537}
   hero_mag: {fileID: 1312094661}
+  hero_buff_list: {fileID: 1819417230}
   monster_obj: {fileID: 819134572}
   monster_max_hp: {fileID: 1884300205}
   monster_hp: {fileID: 1277827628}
   monster_bar: {fileID: 565671989}
   monster_atk: {fileID: 601491324}
   monster_mag: {fileID: 708815004}
+  monster_buff_list: {fileID: 1728020836}
   left_prefab: {fileID: 1883254600113578, guid: 9db82069bd08236439902f0396ec5fca,
     type: 2}
   right_prefab: {fileID: 1696477657421550, guid: 5533ebc08fe60414e900f94d871a9a52,

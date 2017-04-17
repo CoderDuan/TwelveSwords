@@ -11,8 +11,18 @@ public class Creature
     public int mag;
     public string name;
 
-    public float damage_increment = 0.0f;
-    public float damage_reduction = 1.0f;
+	// 对对手造成的伤害系数
+	// 对魔法伤害： final_damage = damage * apply_damage_coefficient * apply_magical_coefficient
+	public float apply_damage_coefficient = 1.0f; // 所有加在这里的伤害都是叠加
+	public float apply_magical_coefficient = 1.0f;
+	public float apply_physical_coefficient = 1.0f;
+
+	// 对手对自己造成的伤害系数
+	// 对魔法伤害：final_damage = damage * take_magical_coefficient * take_damage_coefficient
+	// 反伤只会受 take_damage_coefficient 影响
+	public float take_damage_coefficient = 1.0f;
+	public float take_magical_coefficient = 1.0f;
+	public float take_physical_coefficient = 1.0f;
 
     public List<Skill> skillList = new List<Skill>();
 
@@ -33,7 +43,10 @@ public class Creature
 	{
 		// when call takeDamage, it means this is the opponent
 		if (response.opponent_hp_change < 0) {
-			response.opponent_hp_change = (int)(response.opponent_hp_change * damage_reduction);
+			if (response.type == SkillType.PHYSICAL)
+				response.opponent_hp_change = (int)(response.opponent_hp_change * take_damage_coefficient * take_physical_coefficient);
+			if (response.type == SkillType.MAGICAL)
+				response.opponent_hp_change = (int)(response.opponent_hp_change * take_damage_coefficient * take_magical_coefficient);
 			int newhp = hp + response.opponent_hp_change;
 			newhp = newhp < 0 ? 0 : newhp;
 			hp = newhp;
@@ -65,7 +78,7 @@ public class Creature
 	{
 		// when call takeCounterEffect, it means this is the opponent
 		if (response.opponent_hp_change < 0) {
-			response.opponent_hp_change = (int)(response.opponent_hp_change * damage_reduction);
+			response.opponent_hp_change = (int)(response.opponent_hp_change * take_damage_coefficient);
 			int newhp = hp + response.opponent_hp_change;
 			newhp = newhp < 0 ? 0 : newhp;
 			hp = newhp;

@@ -1,0 +1,6 @@
+* 增强攻击（Amplify Damage）
+- id = 2
+- 伤害提高50%
+- unique = false
+
+* 削弱攻击（）

@@ -39,12 +39,15 @@ public class Controller : MonoBehaviour {
     public RectTransform hero_mp_bar;
     public Text hero_atk;
     public Text hero_mag;
+	public BuffListManager hero_buff_list;
+
     public GameObject monster_obj;
     public Text monster_max_hp;
     public Text monster_hp;
     public RectTransform monster_bar;
     public Text monster_atk;
-    public Text monster_mag;
+	public Text monster_mag;
+	public BuffListManager monster_buff_list;
 
 	// Float text
 	public GameObject left_prefab;
@@ -126,13 +129,14 @@ public class Controller : MonoBehaviour {
 		state = s;
 	}
 
-    public void NewBattle(Monster new_monster)
-    {
+    public void NewBattle(Hero new_hero, Monster new_monster)
+	{
+		hero = new_hero;
         monster = new_monster;
 
         // init visual 
         // hero and monster
-        ((Image)(hero_obj.transform.Find("FIGURE_IMG").gameObject.GetComponent<Image>())).sprite = Resources.Load<Sprite>("hero");
+		((Image)(hero_obj.transform.Find("FIGURE_IMG").gameObject.GetComponent<Image>())).sprite = Resources.Load<Sprite>(Global.PREFAB_IMAGE_FIGURE_PATH + "hero");
         hero_max_hp.text = hero.maxHp.ToString();
         hero_max_mp.text = hero.maxMp.ToString();
         hero_hp.text = hero.hp.ToString();
@@ -142,14 +146,16 @@ public class Controller : MonoBehaviour {
         hero_mp_bar.sizeDelta = new Vector2(((float)hero.mp) / ((float)hero.maxMp) * 233.0f, h);
         hero_atk.text = hero.atk.ToString();
         hero_mag.text = hero.mag.ToString();
+		hero_buff_list.creature = hero;
 
-        ((Image)(monster_obj.transform.Find("FIGURE_IMG").gameObject.GetComponent<Image>())).sprite = Resources.Load<Sprite>(monster.monsterId);
+		((Image)(monster_obj.transform.Find("FIGURE_IMG").gameObject.GetComponent<Image>())).sprite = Resources.Load<Sprite>(Global.PREFAB_IMAGE_FIGURE_PATH + monster.monsterId);
         monster_max_hp.text = monster.maxHp.ToString();
         monster_hp.text = monster.hp.ToString();
         h = monster_bar.sizeDelta.y;
         monster_bar.sizeDelta = new Vector2(((float)monster.hp) / ((float)monster.maxHp) * 233.0f, h);
         monster_atk.text = monster.atk.ToString();
         monster_mag.text = monster.mag.ToString();
+		monster_buff_list.creature = monster;
     }
 
 	// scrolling text
@@ -438,7 +444,7 @@ public class Controller : MonoBehaviour {
 
         hero = ((HeroContainer)GameObject.Find("Hero").transform.GetComponent<HeroContainer>()).hero;
         //monster = new Orc();
-        NewBattle(new SkullWarrior());
+        NewBattle(hero, new SkullWarrior());
 	}
 	
 	// Update is called once per frame
@@ -501,6 +507,9 @@ public class Controller : MonoBehaviour {
 						prefab = null;
 						obj = null;
 
+						hero_buff_list.addBuff (new BuffAmplifyDamage ());
+						hero_buff_list.takeTurn ();
+
                         state = State.STATE_WAIT;
                         return;
                     }
@@ -543,7 +552,7 @@ public class Controller : MonoBehaviour {
                     {
 						float delay = displayProficientTexts(true);
 						//if (delay == 0.0f)
-							state = State.STATE_SKILL_ANI;
+						state = State.STATE_SKILL_ANI;
 						//else
 							//state = State.STATE_WAIT;
                         return;
