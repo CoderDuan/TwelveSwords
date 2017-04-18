@@ -16,6 +16,15 @@ public class BuffManager : MonoBehaviour {
 		image.sprite = Resources.Load<Sprite> (Global.PREFAB_BUFF_FIGURE_PATH + buff.buffid.ToString());
 	}
 
+	public void updateBuff(Buff b)
+	{
+		if (buff.accumulative)
+			buff.turn += b.turn;
+		else
+			buff.turn = buff.turn > b.turn ? buff.turn : b.turn;
+		b = null;
+	}
+
 	public void buffTurnChange(int change)
 	{
 		if (buff == null)

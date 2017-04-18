@@ -35,7 +35,6 @@ abstract public class Skill
     public string description;
 
     public string skillId;
-	public string prefabPath;
 	public string preparePath;
 
     // other display information

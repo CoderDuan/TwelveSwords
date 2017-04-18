@@ -14,12 +14,20 @@
 //    HEALING
 }
 
+public enum BuffEffectMode : int
+{
+	MODE_DELAY = 0,
+	MODE_INSTANT
+}
+
 public abstract class Buff
 {
     public bool unique;
+	public bool accumulative;
     public BuffType type;
+	public BuffEffectMode mode;
     public int turn;
-    public int extraValue; 
+    public float extraValue; 
     public string name;
     public string description;
 	//public string buffId;

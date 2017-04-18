@@ -248,24 +248,81 @@ public class Controller : MonoBehaviour {
 		if (response.proficient != null && response.proficient.Count != 0) {
 			float x = is_left ? -467.5f : 467.5f;
 			float delay = 0.0f;
-			Vector2 pos = new Vector2 (x, 0);
+			Vector2 pos = new Vector2 (x, 110);
 			int size = response.proficient.Count - 1;
 			int idx;
 			for (int i = 0; i < size; i++) {
 				idx = response.proficient [i];
 				createScrollingText (pos, scroll.selectedSkill.proficientName [idx], MyColor.ProficientColor [idx],
-					delay, 2.4f, null, state);
+					delay, 1.2f, null, state);
 				delay += 0.4f;
 			}
 			idx = response.proficient [size];
 			// dont forget state
 			createScrollingText (pos, scroll.selectedSkill.proficientName [idx], MyColor.ProficientColor [idx],
-				delay, 2.4f, null, state/*State.STATE_SKILL_ANI*/);
+				delay, 1.2f, null, state/*State.STATE_SKILL_ANI*/);
 			delay += 0.4f;
 
 			return delay;
 		}
 		return 0.0f;
+	}
+
+//	private float displayDelayBuffEffect(bool is_left, int stage)
+//	{
+//		float delay = 0.0f;
+//		float x = is_left ? -467.5f : 467.5f;
+//		if (is_left) {
+//			int size = hero_buff_list.list.transform.childCount;
+//			for (int i = 0; i < size; i++) {
+//				if (hero_buff_list.list.transform.GetChild (i).gameObject.GetComponent<BuffManager> ().buff.mode == BuffEffectMode.MODE_DELAY) {
+//					int tmp = hero_buff_list.list.transform.GetChild (i).gameObject.GetComponent<BuffManager> ().buff.extraValue;
+//					string str = tmp > 0 ? "+" + tmp.ToString () : tmp.ToString ();
+//					str = hero_buff_list.list.transform.GetChild (i).gameObject.GetComponent<BuffManager> ().buff.name + " " + str;
+//					createScrollingText (new Vector2 (x, 0), str, MyColor.SkillColor, delay, 2.4f, null, state);
+//				}
+//			}
+//		}
+//	}
+
+	private float displaySelfInstantBuffEffect(bool left_is_self, int stage)
+	{
+		float delay = 0.0f;
+		float x = left_is_self ? -467.5f : 467.5f;
+//		if (left_is_self) {
+//			if ()
+//			int size = response.effects[stage].self_buff_on.Count;
+//			for (int i = 0; i < size; i++) {
+//				if (hero_buff_list.list.transform.GetChild (i).gameObject.GetComponent<BuffManager> ().buff.mode == BuffEffectMode.MODE_INSTANT) {
+//					string str = hero_buff_list.list.transform.GetChild (i).gameObject.GetComponent<BuffManager> ().buff.name;
+//					createScrollingText (new Vector2 (x, 60), str, MyColor.SkillColor, delay, 1.5f, null, state);
+//					delay += 0.1f;
+//				}
+//			}
+//		}
+		if (response.effects [stage].self_buff_on != null) {
+			int size = response.effects[stage].self_buff_on.Count;
+			for (int i = 0; i < size; i++) {
+				if (response.effects[stage].self_buff_on[i].mode == BuffEffectMode.MODE_INSTANT) {
+					string str = response.effects[stage].self_buff_on[i].name;
+					createScrollingText (new Vector2 (x, 60), str, MyColor.SkillColor, delay, 1.5f, null, state);
+					delay += 0.1f;
+				}
+			}
+		}
+
+		if (response.effects [stage].self_buff_off != null) {
+			int size = response.effects[stage].self_buff_off.Count;
+			for (int i = 0; i < size; i++) {
+				if (response.effects[stage].self_buff_off[i].mode == BuffEffectMode.MODE_INSTANT) {
+					string str = response.effects[stage].self_buff_off[i].name;
+					createScrollingText (new Vector2 (x, 60), str, MyColor.SkillColor, delay, 1.5f, null, state);
+					delay += 0.1f;
+				}
+			}
+		}
+
+		return delay;
 	}
 
 	private float displaySingleEffect(bool left_is_self, int stage)
@@ -274,9 +331,33 @@ public class Controller : MonoBehaviour {
 			return 0.0f;
 		
 		float sx = left_is_self ? -467.5f : 467.5f;
+		sx += Random.Range (-50.0f, 50.0f);
 		float ox = -sx;
 
 		float sdelay = 0.0f;
+
+		if (response.effects [stage].self_buff_on != null) {
+			int size = response.effects[stage].self_buff_on.Count;
+			for (int i = 0; i < size; i++) {
+				if (response.effects[stage].self_buff_on[i].mode == BuffEffectMode.MODE_INSTANT) {
+					string str = response.effects[stage].self_buff_on[i].name;
+					createScrollingText (new Vector2 (sx, 60), str, MyColor.SkillColor, sdelay, 1.5f, null, state, 24);
+					sdelay += 0.3f;
+				}
+			}
+		}
+
+		if (response.effects [stage].self_buff_off != null) {
+			int size = response.effects[stage].self_buff_off.Count;
+			for (int i = 0; i < size; i++) {
+				if (response.effects[stage].self_buff_off[i].mode == BuffEffectMode.MODE_INSTANT) {
+					string str = response.effects[stage].self_buff_off[i].name;
+					createScrollingText (new Vector2 (sx, 60), str, MyColor.SkillColor, sdelay, 1.5f, null, state, 24);
+					sdelay += 0.3f;
+				}
+			}
+		}
+
 		int tmp = response.effects [stage].self_hp_change;
 		if (tmp != 0) 
 		{
@@ -284,17 +365,40 @@ public class Controller : MonoBehaviour {
 				createScrollingText (new Vector2 (sx, 0), "+" + tmp.ToString (), MyColor.HpRecover, sdelay, 2.4f, null, state);
 			else
 				createScrollingText (new Vector2 (sx, 0), tmp.ToString (), MyColor.HpColor, sdelay, 2.4f, null, state);
-			sdelay += 0.1f;
+			sdelay += 0.2f;
 		}
 
 		tmp = response.effects [stage].self_mp_change;
 		if (tmp > 0) 
 		{
 			createScrollingText (new Vector2 (sx, 0), "+" + tmp.ToString (), MyColor.MpColor, sdelay, 2.4f, null, state);
-			sdelay += 0.1f;
+			sdelay += 0.2f;
 		}
 
 		float odelay = 0.0f;
+
+		if (response.effects [stage].opponent_buff_on != null) {
+			int size = response.effects[stage].opponent_buff_on.Count;
+			for (int i = 0; i < size; i++) {
+				if (response.effects[stage].opponent_buff_on[i].mode == BuffEffectMode.MODE_INSTANT) {
+					string str = response.effects[stage].opponent_buff_on[i].name;
+					createScrollingText (new Vector2 (ox, 60), str, MyColor.SkillColor, odelay, 1.5f, null, state, 24);
+					odelay += 0.3f;
+				}
+			}
+		}
+
+		if (response.effects [stage].opponent_buff_off != null) {
+			int size = response.effects[stage].opponent_buff_off.Count;
+			for (int i = 0; i < size; i++) {
+				if (response.effects[stage].opponent_buff_off[i].mode == BuffEffectMode.MODE_INSTANT) {
+					string str = response.effects[stage].opponent_buff_off[i].name;
+					createScrollingText (new Vector2 (ox, 60), str, MyColor.SkillColor, odelay, 1.5f, null, state, 24);
+					odelay += 0.3f;
+				}
+			}
+		}
+
 		tmp = response.effects [stage].opponent_hp_change;
 		if (tmp != 0) 
 		{
@@ -302,14 +406,14 @@ public class Controller : MonoBehaviour {
 				createScrollingText (new Vector2 (ox, 0), "+" + tmp.ToString (), MyColor.HpRecover, odelay, 2.4f, null, state);
 			else
 				createScrollingText (new Vector2 (ox, 0), tmp.ToString (), MyColor.HpColor, odelay, 2.4f, null, state);
-			odelay += 0.1f;
+			odelay += 0.2f;
 		}
 
 		tmp = response.effects [stage].opponent_mp_change;
 		if (tmp < 0) 
 		{
 			createScrollingText (new Vector2 (ox, 0), tmp.ToString (), MyColor.MpColor, odelay, 2.4f, null, state);
-			odelay += 0.1f;
+			odelay += 0.2f;
 		}
 			
 		return (sdelay > odelay ? sdelay : odelay);
@@ -331,14 +435,14 @@ public class Controller : MonoBehaviour {
 				createScrollingText (new Vector2 (sx, 0), "+" + tmp.ToString (), MyColor.HpRecover, sdelay, 2.4f, null, state);
 			else
 				createScrollingText (new Vector2 (sx, 0), tmp.ToString (), MyColor.HpColor, sdelay, 2.4f, null, state);
-			sdelay += 0.1f;
+			sdelay += 0.2f;
 		}
 
 		tmp = response.self_mp_change;
 		if (tmp > 0) 
 		{
 			createScrollingText (new Vector2 (sx, 0), "+" + tmp.ToString (), MyColor.MpColor, sdelay, 2.4f, null, state);
-			sdelay += 0.1f;
+			sdelay += 0.2f;
 		}
 
 		float odelay = 0.0f;
@@ -349,14 +453,14 @@ public class Controller : MonoBehaviour {
 				createScrollingText (new Vector2 (ox, 0), "+" + tmp.ToString (), MyColor.HpRecover, odelay, 2.4f, null, state);
 			else
 				createScrollingText (new Vector2 (ox, 0), tmp.ToString (), MyColor.HpColor, odelay, 2.4f, null, state);
-			odelay += 0.1f;
+			odelay += 0.2f;
 		}
 
 		tmp = response.opponent_mp_change;
 		if (tmp < 0) 
 		{
 			createScrollingText (new Vector2 (ox, 0), tmp.ToString (), MyColor.MpColor, odelay, 2.4f, null, state);
-			odelay += 0.1f;
+			odelay += 0.2f;
 		}
 
 		return (sdelay > odelay ? sdelay : odelay);
@@ -381,8 +485,7 @@ public class Controller : MonoBehaviour {
 		float delay = 0.0f;
 		for (int i = 0; i < response.effects.Count; i++) 
 		{
-			
-			GameObject effect_prefab = Resources.Load<GameObject> (scroll.selectedSkill.prefabPath);
+			GameObject effect_prefab = Resources.Load<GameObject> (response.effects[i].prefabPath);
 			GameObject traj = Instantiate (effect_prefab,canvas.transform);
 			traj.GetComponent<Identity>().stage = i;
 			traj.GetComponent<FireballTrajectory> ().delay = delay;
@@ -392,7 +495,7 @@ public class Controller : MonoBehaviour {
 			{
 				Destroy(GameObject.Find("__PREPARE__"));
 			}
-			delay += 0.2f;
+			delay += response.effects[i].delay;
 		}
 		return delay;
 	}
@@ -411,7 +514,20 @@ public class Controller : MonoBehaviour {
 		if (turnState == Turn.HERO) 
 		{
 			// display effect and damage
+			// apply buff first
+			hero_buff_list.addBuffs(response.effects[stage].self_buff_on);
+			hero_buff_list.removeBuffs(response.effects[stage].self_buff_off);
+			monster_buff_list.addBuffs (response.effects [stage].opponent_buff_on);
+			monster_buff_list.removeBuffs (response.effects [stage].opponent_buff_off);
+
+			// buff take effect
+			hero_buff_list.takeBuffEffect ();
+			monster_buff_list.takeBuffEffect ();
+
+			// take damage
 			CounterEffectResponse counter = monster.takeDamage (response.effects[stage]);
+
+			// display buff and damage
 			displaySingleEffect(true, stage);
 			updateCreatureState ();
 			if (counter != null) 
@@ -468,8 +584,8 @@ public class Controller : MonoBehaviour {
                         // random dice 1
                         // init animation and play
 						// random a value
-						dice1 = Random.Range(1, 7);
-						//dice1 = 1;
+						//dice1 = Random.Range(1, 7);
+						dice1 = 1;
                         // reset position
                         dice1_obj.GetComponent<RectTransform>().anchoredPosition = dice1_pos + new Vector2(Random.Range(-30, 31), Random.Range(-30, 31));
                         // set active
@@ -507,8 +623,8 @@ public class Controller : MonoBehaviour {
 						prefab = null;
 						obj = null;
 
-						hero_buff_list.addBuff (new BuffAmplifyDamage ());
-						hero_buff_list.takeTurn ();
+						//hero_buff_list.takeTurn ();
+						//hero_buff_list.addBuff (new BuffAmplifyDamage ());
 
                         state = State.STATE_WAIT;
                         return;
@@ -518,8 +634,8 @@ public class Controller : MonoBehaviour {
                         // random dice 2
                         // init animation and play
                         // random a value
-						dice2 = Random.Range(1, 7);
-						//dice2 = 6;
+						//dice2 = Random.Range(1, 7);
+						dice2 = 6;
                         // reset position
 						dice2_obj.GetComponent<RectTransform>().anchoredPosition = dice2_pos + new Vector2(Random.Range(-30, 31), Random.Range(-30, 31));
                         // set active

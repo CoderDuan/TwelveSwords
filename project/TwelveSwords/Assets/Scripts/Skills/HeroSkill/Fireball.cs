@@ -12,7 +12,7 @@ public class Fireball : Skill
     public Fireball()
     {
         skillId = "skill_fireball";
-		prefabPath = "Prefab/Fireball/fireball_prefab";
+		//prefabPath = "Prefab/Fireball/fireball_prefab";
 		preparePath = "Prefab/Fireball/fireball_prepare";
         name = "火球术";
 		type = SkillType.PHYSICAL;
@@ -59,6 +59,11 @@ public class Fireball : Skill
 		response.effects [0].stage = 0;
 		response.effects [0].total = 1;
 		response.effects [0].type = type;
+		response.effects [0].delay = 0.2f;
+		response.effects [0].prefabPath = "Prefab/Fireball/fireball_prefab";
+//		response.effects [0].opponent_buff_on = new List<Buff> ();
+//		response.effects [0].opponent_buff_on.Add (new BuffAmplifyDamage ());
+//		response.effects [0].opponent_buff_on.Add (new BuffAmplifyDamage ());
 		//response.opponent_hp_change = new List<int>();
 		//response.self_mp_change = new List<int>();
 

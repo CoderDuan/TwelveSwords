@@ -17,10 +17,13 @@ public class SingleEffectResponse
 
 	public SkillType type;
 
-	public List<int> self_buff_on = null;
-	public List<int> self_buff_off = null;
-	public List<int> opponent_buff_on = null;
-	public List<int> opponent_buff_off = null;
+	public List<Buff> self_buff_on = null;
+	public List<Buff> self_buff_off = null;
+	public List<Buff> opponent_buff_on = null;
+	public List<Buff> opponent_buff_off = null;
+
+	public float delay = 0.0f;
+	public string prefabPath;
 
 	public SingleEffectResponse() { }
 
@@ -43,5 +46,7 @@ public class SingleEffectResponse
 		opponent_buff_off = a.opponent_buff_off;
 		total = a.total;
 		stage = a.stage + 1;
+		delay = a.delay;
+		prefabPath = a.prefabPath;
 	}
 }
