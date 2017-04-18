@@ -39,7 +39,7 @@ public class SkullWarrior : Monster
 		} else {
 			return null;
 		}
-		return null;
+		//return null;
 	}
 
     public override int takeTurn(Hero hero, int d1, int d2)

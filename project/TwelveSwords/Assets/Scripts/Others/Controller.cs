@@ -16,7 +16,7 @@ public class Controller : MonoBehaviour {
     // about skill
     public SKillScroll scroll;
     private SkillEffectResponse response = null;
-	private CounterEffectResponse counter = null;
+	//private CounterEffectResponse counter = null;
 
     public GameObject dice1_obj;
     public GameObject dice2_obj;
@@ -666,7 +666,8 @@ public class Controller : MonoBehaviour {
                     }
 					case State.STATE_PROFICIENT:
                     {
-						float delay = displayProficientTexts(true);
+						//float delay = 
+						displayProficientTexts(true);
 						//if (delay == 0.0f)
 						state = State.STATE_SKILL_ANI;
 						//else
@@ -699,6 +700,7 @@ public class Controller : MonoBehaviour {
 						{
 							dice1_obj.SetActive(false);
 							dice2_obj.SetActive (false);
+							response.Clear ();
 							state = State.STATE_DICE_1;
 						}
 						return;

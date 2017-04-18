@@ -7,11 +7,11 @@ public class FireballPrepare : MonoBehaviour {
 	public float rotate = 12.0f;
 	public Vector2 position = new Vector2(-467.5f, 70);
 	public GameObject obj;
-	private Vector3 scale;
+	//private Vector3 scale;
 
 	// Use this for initialization
 	void Start () {
-		scale = obj.transform.localScale;
+		//scale = obj.transform.localScale;
 		obj.GetComponent<RectTransform> ().anchoredPosition = position;
 	}
 	

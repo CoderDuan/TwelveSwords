@@ -13,4 +13,40 @@ public class SkillEffectResponse  {
 	public List<SingleEffectResponse> effects = null;
 
     public SkillEffectResponse() { }
+	public void Clear()
+	{
+		if (proficient != null) 
+		{
+			proficient.Clear ();
+			proficient = null;
+		}
+		if (effects != null)
+		{
+			for (int i = 0; i < effects.Count; i++) 
+			{
+				if (effects [i].self_buff_on != null) 
+				{
+					effects [i].self_buff_on.Clear ();
+					effects [i].self_buff_on = null;
+				}
+				if (effects [i].self_buff_off != null) 
+				{
+					effects [i].self_buff_off.Clear ();
+					effects [i].self_buff_off = null;
+				}
+				if (effects [i].opponent_buff_on != null) 
+				{
+					effects [i].opponent_buff_on.Clear ();
+					effects [i].opponent_buff_on = null;
+				}
+				if (effects [i].opponent_buff_off != null) 
+				{
+					effects [i].opponent_buff_off.Clear ();
+					effects [i].opponent_buff_off = null;
+				}
+			}
+			effects.Clear ();
+			effects = null;
+		}
+	}
 }
