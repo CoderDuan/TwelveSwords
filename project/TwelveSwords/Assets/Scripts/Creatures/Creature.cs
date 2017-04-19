@@ -24,6 +24,9 @@ public class Creature
 	public float take_magical_coefficient = 1.0f;
 	public float take_physical_coefficient = 1.0f;
 
+	// 减耗系数
+	public float cost_coefficient = 1.0f;
+
     public List<Skill> skillList = new List<Skill>();
 
     //public List<PassiveSkill> passiveSkillList = new List<PassiveSkill>();

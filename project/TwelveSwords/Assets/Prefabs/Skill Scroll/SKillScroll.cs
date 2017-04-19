@@ -80,20 +80,20 @@ public class SKillScroll : MonoBehaviour {
 
     private void initSigleSkillWithXML(Skill skill, XmlElement xmlEle)
     {
-        skill.skillId = xmlEle.GetAttribute("id");
-        skill.name = xmlEle.GetAttribute("name");
-		skill.type =(SkillType) (int.Parse(xmlEle.GetAttribute("type")));
-        skill.level = (SkillLevel)(int.Parse(xmlEle.GetAttribute("level")));
-        skill.usable = (SkillUsable)(int.Parse(xmlEle.GetAttribute("usable")));
-        skill.cost = int.Parse(xmlEle.GetAttribute("cost"));
-        skill.damageFormula = xmlEle.GetAttribute("damage");
-        skill.description = xmlEle.GetAttribute("description");
-        skill.maxProficient = int.Parse(xmlEle.GetAttribute("max_proficient"));
-        skill.proficient = int.Parse(xmlEle.GetAttribute("proficient"));
-        skill.isLocked = bool.Parse(xmlEle.GetAttribute("is_locked"));
-        skill.proficientInformation[0] = xmlEle.GetAttribute("proficient_1");
-        skill.proficientInformation[1] = xmlEle.GetAttribute("proficient_2");
-        skill.proficientInformation[2] = xmlEle.GetAttribute("proficient_3");
+//        skill.skillId = xmlEle.GetAttribute("id");
+//        skill.name = xmlEle.GetAttribute("name");
+//		  skill.type =(SkillType) (int.Parse(xmlEle.GetAttribute("type")));
+//        skill.level = (SkillLevel)(int.Parse(xmlEle.GetAttribute("level")));
+//        skill.usable = (SkillUsable)(int.Parse(xmlEle.GetAttribute("usable")));
+//        skill.cost = int.Parse(xmlEle.GetAttribute("cost"));
+//        skill.damageFormula = xmlEle.GetAttribute("damage");
+//        skill.description = xmlEle.GetAttribute("description");
+//        skill.maxProficient = int.Parse(xmlEle.GetAttribute("max_proficient"));
+//        skill.proficient = int.Parse(xmlEle.GetAttribute("proficient"));
+//        skill.isLocked = bool.Parse(xmlEle.GetAttribute("is_locked"));
+//        skill.proficientInformation[0] = xmlEle.GetAttribute("proficient_1");
+//        skill.proficientInformation[1] = xmlEle.GetAttribute("proficient_2");
+//        skill.proficientInformation[2] = xmlEle.GetAttribute("proficient_3");
     }
 
     private void cleanAllText()
@@ -129,9 +129,9 @@ public class SKillScroll : MonoBehaviour {
         skillDamage.text = selectedSkill.damageFormula;
         skillProficient.text = "Proficient: " + selectedSkill.proficient + "/" + selectedSkill.maxProficient;
         skillDescription.text = selectedSkill.description;
-        skillProficient1.text = selectedSkill.proficientInformation[0];
-        skillProficient2.text = selectedSkill.proficientInformation[1];
-        skillProficient3.text = selectedSkill.proficientInformation[2];
+		skillProficient1.text = selectedSkill.proficientName [0] + selectedSkill.proficientCondition [0] + "\n" + selectedSkill.proficientEffect [0];
+		skillProficient2.text = selectedSkill.proficientName [1] + selectedSkill.proficientCondition [1] + "\n" + selectedSkill.proficientEffect [1];
+		skillProficient3.text = selectedSkill.proficientName [2] + selectedSkill.proficientCondition [2] + "\n" + selectedSkill.proficientEffect [2];
 
         float[] prob = selectedSkill.getProbability(controller.dice1);
 

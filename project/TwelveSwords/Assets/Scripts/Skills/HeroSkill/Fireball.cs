@@ -24,14 +24,18 @@ public class Fireball : Skill
         maxProficient = 3;
         proficient = 3;
         isLocked = false;
-        proficientInformation = new string[3];
-		proficientInformation[0] = "强火[精通1]：当第二次数值大于第一次时，伤害增加50%";
-		proficientInformation[1] = "减耗[精通2]：当第二次数值大于第一次两倍时，本次施法不耗蓝";
-		proficientInformation[2] = "连环[精通3]：当第二次数值大于第一次三倍时，额外发射一枚同效果的火球";   
+		proficientEffect = new string[3];
+		proficientEffect[0] = "- 伤害增加50%";
+		proficientEffect[1] = "- 本次施法不耗蓝";
+		proficientEffect[2] = "- 额外发射一枚同效果的火球";
 		proficientName = new string[3];
 		proficientName [0] = "强火[精通1]";
 		proficientName [1] = "减耗[精通2]";
 		proficientName [2] = "连环[精通3]";
+		proficientCondition = new string[3];
+		proficientCondition [0] = "：[D1<D2]";
+		proficientCondition [1] = "：[2*D1<D2]";
+		proficientCondition [2] = "：[3*D1<D2]";
     }
 
     public override float[] getProbability(int dice1)
@@ -68,7 +72,7 @@ public class Fireball : Skill
 		//response.self_mp_change = new List<int>();
 
 		float damage = - (Dice.max(dice1, dice2) + 3) * from.mag * from.apply_damage_coefficient * from.apply_magical_coefficient;
-        int manacost = -cost;
+		int manacost = - (int)((float)cost * from.cost_coefficient);
 
         if (proficient >= 1 && dice2 > dice1)
         {

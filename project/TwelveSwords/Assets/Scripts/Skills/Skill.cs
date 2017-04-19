@@ -5,13 +5,16 @@ public enum SkillType
     PHYSICAL = 0,
     MAGICAL,
 	RECOVERY,
-	MULTIPLE
+	MULTIPLE,
+	// special
+	UNCOUNTERABLE
 };
 
 public enum SkillLevel : int
 {
     PRIMARY = 0,
     ADVANCED,
+	MASTER,
     LEGENDARY
 };
 
@@ -39,8 +42,9 @@ abstract public class Skill
 
     // other display information
 	public string damageFormula;
-	public string[] proficientName = new string[3];
-    public string[] proficientInformation = new string[3];
+	public string[] proficientName = null;
+	public string[] proficientEffect = null;
+	public string[] proficientCondition = null;
 
     public bool isLocked;
 

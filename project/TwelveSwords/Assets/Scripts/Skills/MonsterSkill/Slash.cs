@@ -14,8 +14,8 @@ public class Slash : Skill
 		description = "挥动手中的武器，对敌人进行猛力一击，并且有概率造成更多的伤害。";
 		maxProficient = 1;
 		proficient = 1;
-		proficientInformation = new string[1];
-		proficientInformation[0] = "暴击[精通1]：当两次数值相同时，造成200%的伤害";
+		//proficientInformation = new string[1];
+		//proficientInformation[0] = "暴击[精通1]：当两次数值相同时，造成200%的伤害";
 		proficientName = new string[1];
 		proficientName[0] = "暴击[精通1]";
 	}
