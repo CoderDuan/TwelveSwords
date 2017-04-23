@@ -15,6 +15,6 @@
 
 	public override void takeEffect(Creature target)
 	{
-		target.apply_damage_coefficient += extraValue;
+		target.detail.do_damage_total += extraValue;
 	}
 }

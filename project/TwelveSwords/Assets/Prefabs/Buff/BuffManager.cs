@@ -13,7 +13,7 @@ public class BuffManager : MonoBehaviour {
 	public void setBuff(Buff b)
 	{
 		buff = b;
-		image.sprite = Resources.Load<Sprite> (Global.PREFAB_BUFF_FIGURE_PATH + buff.buffid.ToString());
+		image.sprite = Resources.Load<Sprite> (Global.PREFAB_IMAGE_BUFF_PATH + buff.buffid.ToString());
 	}
 
 	public void updateBuff(Buff b)

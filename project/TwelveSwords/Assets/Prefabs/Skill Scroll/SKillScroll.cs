@@ -73,7 +73,7 @@ public class SKillScroll : MonoBehaviour {
             cell.name = "cell" + i.ToString(); 
             int idx = i;
             ((Button)(cell.transform.Find("Icon").gameObject.GetComponent<Button>())).onClick.AddListener(() => setSelectedSkill(idx));
-			((Image)(cell.transform.Find("Icon").gameObject.GetComponent<Image>())).sprite = Resources.Load<Sprite>(Global.PREFAB_SKILL_FIGURE_PATH + ((Skill)skillList[i]).skillId);
+			((Image)(cell.transform.Find("Icon").gameObject.GetComponent<Image>())).sprite = Resources.Load<Sprite>(Global.PREFAB_IMAGE_SKILL_PATH + ((Skill)skillList[i]).skillId);
             cell.transform.Find("Locked").gameObject.SetActive(((Skill)skillList[i]).isLocked);
         }
     }
@@ -144,7 +144,7 @@ public class SKillScroll : MonoBehaviour {
     {
         if (selectedSkill == null)
             return;
-        if (selectedSkill.cost > hero.mp)
+		if (selectedSkill.cost > hero.detail.cur_mp)
         {
             messagebox.show();
             return;

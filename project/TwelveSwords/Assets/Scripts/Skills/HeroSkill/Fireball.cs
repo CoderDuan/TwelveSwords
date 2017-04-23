@@ -71,8 +71,8 @@ public class Fireball : Skill
 		//response.opponent_hp_change = new List<int>();
 		//response.self_mp_change = new List<int>();
 
-		float damage = - (Dice.max(dice1, dice2) + 3) * from.mag * from.apply_damage_coefficient * from.apply_magical_coefficient;
-		int manacost = - (int)((float)cost * from.cost_coefficient);
+		float damage = - (Dice.max(dice1, dice2) + 3) * from.detail.final_mag * from.detail.do_damage_total * from.detail.do_damage_magical;
+		int manacost = - (int)((float)cost * from.detail.cost_coefficient);
 
         if (proficient >= 1 && dice2 > dice1)
         {
@@ -100,7 +100,7 @@ public class Fireball : Skill
 
 		//response.self_mp_change.Add(manacost);
 
-        from.mp += manacost;
+		from.detail.cur_mp += manacost;
         
 		// Apply all effect to target
 		//to.takeDamage(response);

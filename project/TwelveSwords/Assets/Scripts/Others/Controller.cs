@@ -30,23 +30,23 @@ public class Controller : MonoBehaviour {
     private State state = State.DEFEATED;
 
     // hero and monster visual things
-    public GameObject hero_obj;
-    public Text hero_max_hp;
-    public Text hero_hp;
-    public RectTransform hero_hp_bar;
-    public Text hero_max_mp;
-    public Text hero_mp;
-    public RectTransform hero_mp_bar;
-    public Text hero_atk;
-    public Text hero_mag;
+	public CreatureManager hero_manager;
+//    public Text hero_max_hp;
+//    public Text hero_hp;
+//    public RectTransform hero_hp_bar;
+//    public Text hero_max_mp;
+//    public Text hero_mp;
+//    public RectTransform hero_mp_bar;
+//    public Text hero_atk;
+//    public Text hero_mag;
 	public BuffListManager hero_buff_list;
 
-    public GameObject monster_obj;
-    public Text monster_max_hp;
-    public Text monster_hp;
-    public RectTransform monster_bar;
-    public Text monster_atk;
-	public Text monster_mag;
+	public CreatureManager monster_manager;
+//    public Text monster_max_hp;
+//    public Text monster_hp;
+//    public RectTransform monster_bar;
+//    public Text monster_atk;
+//	public Text monster_mag;
 	public BuffListManager monster_buff_list;
 
 	// Float text
@@ -136,25 +136,27 @@ public class Controller : MonoBehaviour {
 
         // init visual 
         // hero and monster
-		((Image)(hero_obj.transform.Find("FIGURE_IMG").gameObject.GetComponent<Image>())).sprite = Resources.Load<Sprite>(Global.PREFAB_IMAGE_FIGURE_PATH + "hero");
-        hero_max_hp.text = hero.maxHp.ToString();
-        hero_max_mp.text = hero.maxMp.ToString();
-        hero_hp.text = hero.hp.ToString();
-        hero_mp.text = hero.mp.ToString();
-        float h = hero_hp_bar.sizeDelta.y;
-        hero_hp_bar.sizeDelta = new Vector2(((float)hero.hp) / ((float)hero.maxHp) * 233.0f, h);
-        hero_mp_bar.sizeDelta = new Vector2(((float)hero.mp) / ((float)hero.maxMp) * 233.0f, h);
-        hero_atk.text = hero.atk.ToString();
-        hero_mag.text = hero.mag.ToString();
+		//((Image)(hero_obj.transform.Find("FIGURE_IMG").gameObject.GetComponent<Image>())).sprite = Resources.Load<Sprite>(Global.PREFAB_IMAGE_FIGURE_PATH + "hero");
+//        hero_max_hp.text = hero.maxHp.ToString();
+//        hero_max_mp.text = hero.maxMp.ToString();
+//        hero_hp.text = hero.hp.ToString();
+//        hero_mp.text = hero.mp.ToString();
+//        float h = hero_hp_bar.sizeDelta.y;
+//        hero_hp_bar.sizeDelta = new Vector2(((float)hero.hp) / ((float)hero.maxHp) * 233.0f, h);
+//        hero_mp_bar.sizeDelta = new Vector2(((float)hero.mp) / ((float)hero.maxMp) * 233.0f, h);
+//        hero_atk.text = hero.atk.ToString();
+//        hero_mag.text = hero.mag.ToString();
+		hero_manager.bindCreature(hero);
 		hero_buff_list.creature = hero;
 
-		((Image)(monster_obj.transform.Find("FIGURE_IMG").gameObject.GetComponent<Image>())).sprite = Resources.Load<Sprite>(Global.PREFAB_IMAGE_FIGURE_PATH + monster.monsterId);
-        monster_max_hp.text = monster.maxHp.ToString();
-        monster_hp.text = monster.hp.ToString();
-        h = monster_bar.sizeDelta.y;
-        monster_bar.sizeDelta = new Vector2(((float)monster.hp) / ((float)monster.maxHp) * 233.0f, h);
-        monster_atk.text = monster.atk.ToString();
-        monster_mag.text = monster.mag.ToString();
+		//((Image)(monster_obj.transform.Find("FIGURE_IMG").gameObject.GetComponent<Image>())).sprite = Resources.Load<Sprite>(Global.PREFAB_IMAGE_FIGURE_PATH + monster.monsterId);
+//        monster_max_hp.text = monster.maxHp.ToString();
+//        monster_hp.text = monster.hp.ToString();
+//        h = monster_bar.sizeDelta.y;
+//        monster_bar.sizeDelta = new Vector2(((float)monster.hp) / ((float)monster.maxHp) * 233.0f, h);
+//        monster_atk.text = monster.atk.ToString();
+//        monster_mag.text = monster.mag.ToString();
+		monster_manager.bindCreature(monster);
 		monster_buff_list.creature = monster;
     }
 
@@ -469,13 +471,15 @@ public class Controller : MonoBehaviour {
 	private void updateCreatureState()
 	{
 		// hp and mp
-		hero_hp_bar.sizeDelta = new Vector2(((float)hero.hp) / ((float)hero.maxHp) * 233.0f, 18.0f);
-		hero_hp.text = hero.hp.ToString ();
-		hero_mp_bar.sizeDelta = new Vector2(((float)hero.mp) / ((float)hero.maxMp) * 233.0f, 18.0f);
-		hero_mp.text = hero.mp.ToString ();
-
-		monster_bar.sizeDelta = new Vector2(((float)monster.hp) / ((float)monster.maxHp) * 233.0f, 18.0f);
-		monster_hp.text = monster.hp.ToString ();
+//		hero_hp_bar.sizeDelta = new Vector2(((float)hero.hp) / ((float)hero.maxHp) * 233.0f, 18.0f);
+//		hero_hp.text = hero.hp.ToString ();
+//		hero_mp_bar.sizeDelta = new Vector2(((float)hero.mp) / ((float)hero.maxMp) * 233.0f, 18.0f);
+//		hero_mp.text = hero.mp.ToString ();
+//
+//		monster_bar.sizeDelta = new Vector2(((float)monster.hp) / ((float)monster.maxHp) * 233.0f, 18.0f);
+//		monster_hp.text = monster.hp.ToString ();
+		hero_manager.UpdateManually();
+		monster_manager.UpdateManually ();
 
 		// buff change follows
 	}
@@ -677,10 +681,10 @@ public class Controller : MonoBehaviour {
 					case State.STATE_SKILL_ANI:
                     {
 						// change hp and mp in gui
-						hero_mp.text = hero.mp.ToString();
-						float h = hero_hp_bar.sizeDelta.y;
-						hero_mp_bar.sizeDelta = new Vector2(((float)hero.mp) / ((float)hero.maxMp) * 233.0f, h);
-
+						//hero_mp.text = hero.mp.ToString();
+						//float h = hero_hp_bar.sizeDelta.y;
+						//hero_mp_bar.sizeDelta = new Vector2(((float)hero.mp) / ((float)hero.maxMp) * 233.0f, h);
+						hero_manager.UpdateManually();
 						generateSkillEffect ();
 						
 						//effect_prefab = null;

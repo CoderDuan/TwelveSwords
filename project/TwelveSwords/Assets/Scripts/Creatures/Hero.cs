@@ -26,13 +26,22 @@ public class Hero : Creature
         exp = 0;
         level = 1;
 
-        name = "Luke";
-        hp = 50;
-        maxHp = 50;
-        mp = 30;
-        maxMp = 30;
-        atk = 1;
-        mag = 1;
+        name = "Lee";
+        base_hp = 50;
+        base_mp = 10;
+        base_atk = 1;
+        base_mag = 1;
+
+		creature_id = "hero";
+
+		detail = new DetailInformation ();
+
+		detail.max_hp = base_hp;
+		detail.max_mp = base_mp;
+		detail.cur_hp = detail.max_hp;
+		detail.cur_mp = detail.max_mp;
+		detail.final_atk = base_atk;
+		detail.final_mag = base_mag;
     }
 
 	public override CounterEffectResponse takeDamage (SingleEffectResponse response)
